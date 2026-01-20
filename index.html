@@ -2987,7 +2987,7 @@ ${body}`.trim();
         const name = nameFromNome || nameFromApelido || "";
         if (!name)
           continue;
-        let posRaw = getCol("posicao", 1);
+        let posRaw = getCol("posicao", 2);
         posRaw = posRaw ? posRaw.toUpperCase() : "MEI ARM";
         const categoryRaw = getCol("categoria", 3);
         const categoryLabel = (categoryRaw || "REGULAR").trim().toUpperCase();
