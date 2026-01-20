@@ -2984,11 +2984,11 @@ ${body}`.trim();
         const name = nameFromNome || nameFromApelido || "";
         if (!name)
           continue;
-        let posRaw = getCol("posicao", 1);
+        let posRaw = getCol("posicao", 2);
         posRaw = posRaw ? posRaw.toUpperCase() : "MEI ARM";
-        let typeRaw = getCol("categoria", 2);
+        let typeRaw = getCol("categoria", 3);
         typeRaw = typeRaw ? typeRaw.toUpperCase() : "REGULAR";
-        const avatarRaw = getCol("fotourl", 3);
+        const avatarRaw = getCol("fotourl", 4);
         let pos = posRaw;
         const posMap = {
           "GK": "GOL",
