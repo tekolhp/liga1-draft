@@ -2338,7 +2338,10 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
           const parsed = JSON.parse(saved);
           if (!parsed[0].logo)
             return INITIAL_TEAMS;
-          return parsed;
+          return parsed.map((team) => {
+            const base = INITIAL_TEAMS.find((t) => t.id === team.id);
+            return base ? __spreadProps(__spreadValues({}, team), { logo: base.logo }) : team;
+          });
         }
         return INITIAL_TEAMS;
       } catch (e) {
