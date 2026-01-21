@@ -2805,11 +2805,6 @@ ${body}`.trim();
     (0, import_react3.useEffect)(() => {
       if (revealData) {
         const timer = setTimeout(() => {
-          const { player, team } = revealData;
-          sendAssignmentToSheet(player.name || player.nickname || "", team.name);
-          setAssignments((prev) => __spreadProps(__spreadValues({}, prev), { [player.id]: team.id }));
-          setPickHistory((prev) => [...prev, player.id]);
-          setCurrentPickIndex((prev) => prev + 1);
           setRevealData(null);
         }, 2500);
         return () => clearTimeout(timer);
@@ -3064,6 +3059,10 @@ ${body}`.trim();
         return;
       }
       playSound("pick");
+      sendAssignmentToSheet(player.name || player.nickname || "", currentTeam.name);
+      setAssignments((prev) => __spreadProps(__spreadValues({}, prev), { [player.id]: currentTeam.id }));
+      setPickHistory((prev) => [...prev, player.id]);
+      setCurrentPickIndex((prev) => prev + 1);
       setRevealData({ player, team: currentTeam });
       setIsPlaying(false);
     };
