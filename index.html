@@ -3352,9 +3352,15 @@ ${body}`.trim();
               assignmentsFromSheet[p.id] = teamMatch.id;
           });
           const remappedHistory = (pickHistory || []).map((id) => previousIdToKey[id]).filter(Boolean).map((key) => newKeyToId[key]).filter(Boolean);
+          const sheetRegularCount = newPlayers.filter((p) => p.type === "REGULAR" && assignmentsFromSheet[p.id]).length;
           setPlayers(newPlayers);
           setAssignments(isAuto ? assignmentsFromSheet : remappedAssignments);
-          setPickHistory(remappedHistory);
+          if (isAuto) {
+            setPickHistory([]);
+            setCurrentPickIndex(sheetRegularCount);
+          } else {
+            setPickHistory(remappedHistory);
+          }
           setCsvInput("");
           if (!isAuto) setSuccessMsg(`Sucesso! ${newPlayers.length} jogadores foram importados.`);
           setConfirmModal(null);
