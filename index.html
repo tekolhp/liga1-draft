@@ -2315,6 +2315,84 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       return "bg-red-600 text-white border-red-500 shadow-red-600/20";
     return "bg-slate-700 text-white border-slate-600";
   };
+  var slugifyTeam = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  var parseSheetCsv = (rawData) => {
+    if (!rawData)
+      return [];
+    const normalizedInput = rawData.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+    const rows = normalizedInput.split("\n").filter((r) => r.trim() !== "");
+    if (!rows.length)
+      return [];
+    const normalizeHeader = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
+    const headerCells = rows[0]?.split(/[,;\t]/).map((cell) => normalizeHeader(cell));
+    const findHeader = (keys) => {
+      if (!headerCells)
+        return -1;
+      return headerCells.findIndex((h) => keys.includes(h));
+    };
+    const headerIndex = (() => {
+      const nomeIdx = findHeader(["nome"]);
+      const posIdx = findHeader(["posicao", "pos"]);
+      const catIdx = findHeader(["categoria", "tipo"]);
+      return {
+        nome: nomeIdx >= 0 ? nomeIdx : 0,
+        apelido: findHeader(["apelido", "nick", "nickname"]),
+        posicao: posIdx >= 0 ? posIdx : 2,
+        categoria: catIdx >= 0 ? catIdx : 3,
+        fotourl: findHeader(["fotourl", "foto", "imagem", "image", "url"]),
+        time: findHeader(["time", "equipe", "team"])
+      };
+    })();
+    const startIdx = headerCells ? 1 : 0;
+    const posMap = {
+      "GK": "GOL",
+      "GOLEIRO": "GOL",
+      "GL": "GOL",
+      "ZAG": "FIXO",
+      "ZAGUEIRO": "FIXO",
+      "DEF": "FIXO",
+      "BEQUE": "FIXO",
+      "LD": "ALA DIR",
+      "LE": "ALA ESQ",
+      "LATERAL": "ALA DIR",
+      "ALA DIREITA": "ALA DIR",
+      "ALA ESQUERDA": "ALA ESQ",
+      "MC": "MEI ARM",
+      "MEIA": "MEI ARM",
+      "VOL": "MEI ARM",
+      "MEIO": "MEI ARM",
+      "ARMADOR": "MEI ARM",
+      "MD": "MEI DEF",
+      "MEIA DEF": "MEI DEF",
+      "PIVO": "PIV\u00D4",
+      "ATA": "PIV\u00D4",
+      "ATACANTE": "PIV\u00D4",
+      "ST": "PIV\u00D4",
+      "CF": "PIV\u00D4",
+      "CENTROAVANTE": "PIV\u00D4"
+    };
+    const entries = [];
+    for (let i = startIdx; i < rows.length; i++) {
+      const line = rows[i].replace(/"/g, "").trim();
+      const cols = line.split(/[,;\t]/).map((c) => c.trim());
+      const getCol = (idx, fallbackIdx) => cols[idx != null && idx >= 0 ? idx : fallbackIdx] || "";
+      const name = getCol(headerIndex.nome, 0) || getCol(headerIndex.apelido, "");
+      if (!name)
+        continue;
+      let posRaw = getCol(headerIndex.posicao, 2).toUpperCase() || "MEI ARM";
+      let position = posMap[posRaw] || (GAME_POSITIONS.includes(posRaw) ? posRaw : "MEI ARM");
+      const categoryRaw = getCol(headerIndex.categoria, 3).toUpperCase() || "REGULAR";
+      let type = "REGULAR";
+      if (categoryRaw.includes("CAP") || categoryRaw.includes("LIDER") || categoryRaw.includes("CAPITAO") || categoryRaw.includes("CAPS"))
+        type = "CAPTAIN";
+      if (categoryRaw.includes("WILD") || categoryRaw.includes("CORINGA") || categoryRaw.includes("ESTRELA") || categoryRaw === "WC")
+        type = "WILDCARD";
+      const avatar = getCol(headerIndex.fotourl, 4) || DEFAULT_AVATAR;
+      const team = getCol(headerIndex.time, 5);
+      entries.push({ name, position, type, avatar, team });
+    }
+    return entries;
+  };
   var getCardTypeStyle = (type) => {
     if (type === "CAPTAIN")
       return "border-yellow-500/50 ring-1 ring-yellow-500/30 shadow-[0_0_15px_rgba(234,179,8,0.2)]";
@@ -2356,6 +2434,18 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         return {};
       }
     });
+    const teamRoute = (0, import_react3.useMemo)(() => {
+      if (typeof window === "undefined")
+        return null;
+      const slug = window.location.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
+      if (!slug)
+        return null;
+      const matched = INITIAL_TEAMS.find((t) => slugifyTeam(t.name) === slug);
+      return matched ? matched.name : null;
+    }, []);
+    const [publicRoster, setPublicRoster] = (0, import_react3.useState)([]);
+    const [publicLoading, setPublicLoading] = (0, import_react3.useState)(false);
+    const [publicError, setPublicError] = (0, import_react3.useState)("");
     const [isPlaying, setIsPlaying] = (0, import_react3.useState)(false);
     const [isShuffling, setIsShuffling] = (0, import_react3.useState)(false);
     const [currentPickIndex, setCurrentPickIndex] = (0, import_react3.useState)(() => {
@@ -2486,6 +2576,37 @@ ${body}`.trim();
       loadSheet();
       return () => controller.abort();
     }, []);
+    (0, import_react3.useEffect)(() => {
+      if (!teamRoute)
+        return;
+      let isActive = true;
+      const fetchRoster = async () => {
+        setPublicLoading(true);
+        try {
+          const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+          const text = await response.text();
+          const entries = parseSheetCsv(text);
+          const targetSlug = slugifyTeam(teamRoute);
+          const filtered = entries.filter((entry) => slugifyTeam(entry.team || "") === targetSlug);
+          if (isActive) {
+            setPublicRoster(filtered);
+            setPublicError("");
+          }
+        } catch (err) {
+          if (isActive)
+            setPublicError("Falha ao carregar a planilha do Google.");
+        } finally {
+          if (isActive)
+            setPublicLoading(false);
+        }
+      };
+      fetchRoster();
+      const intervalId = setInterval(fetchRoster, 5e3);
+      return () => {
+        isActive = false;
+        clearInterval(intervalId);
+      };
+    }, [teamRoute]);
     const unassignedCaptains = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "CAPTAIN" && !assignments[p.id]), [players, assignments]);
     const unassignedWildcards = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "WILDCARD" && !assignments[p.id]), [players, assignments]);
     const isReadyToStart = unassignedCaptains.length === 0 && unassignedWildcards.length === 0;
@@ -3251,6 +3372,10 @@ ${body}`.trim();
         return "text-yellow-400";
       return "text-red-500 animate-pulse font-black scale-110";
     };
+    const teamInfo = teamRoute ? INITIAL_TEAMS.find((t) => t.name === teamRoute) : null;
+    if (teamRoute) {
+      return /* @__PURE__ */ import_react3.default.createElement("div", { className: "min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-orange-500/30 pb-24" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 pointer-events-none overflow-hidden z-0" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-600/10 blur-[120px] animate-pulse" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-900/20 blur-[120px] animate-pulse", style: { animationDelay: "2s" } }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-slate-800/30 blur-[100px]" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "relative z-10 max-w-[1200px] mx-auto px-6 pt-10" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-4 mb-6" }, teamInfo && /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-14 h-14 bg-slate-900/60 rounded-2xl border border-white/10 flex items-center justify-center p-2 shadow-lg" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: teamInfo.logo, className: "w-full h-full object-contain" })), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("h1", { className: "text-3xl md:text-4xl font-black uppercase tracking-tight text-white" }, teamRoute), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-slate-400 font-bold uppercase tracking-widest" }, publicRoster.length, " jogadores no time"))), publicError && /* @__PURE__ */ import_react3.default.createElement("div", { className: "mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-200 text-sm font-bold" }, publicError), publicLoading && /* @__PURE__ */ import_react3.default.createElement("div", { className: "mb-6 text-xs text-slate-400 uppercase tracking-widest font-bold" }, "Atualizando..."), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4" }, publicRoster.map((player, idx) => /* @__PURE__ */ import_react3.default.createElement("div", { key: `${player.name}-${idx}`, className: "rounded-2xl overflow-hidden border border-white/10 bg-slate-900/70" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "relative aspect-[3/4]" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: player.avatar, className: "absolute inset-0 w-full h-full object-cover opacity-90" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-3 right-3 flex gap-1" }, player.type === "CAPTAIN" && /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 16, className: "text-yellow-400 drop-shadow-md", fill: "currentColor" }), player.type === "WILDCARD" && /* @__PURE__ */ import_react3.default.createElement(Star, { size: 16, className: "text-purple-400 drop-shadow-md", fill: "currentColor" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 p-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shadow-sm backdrop-blur-md border border-white/10 ${getPositionBadgeStyle(player.position)}` }, player.position), /* @__PURE__ */ import_react3.default.createElement("h3", { className: "mt-1 font-black text-xs uppercase tracking-tight text-white" }, player.name))))))));
+    }
     return /* @__PURE__ */ import_react3.default.createElement("div", { className: "min-h-screen bg-slate-900 text-slate-100 font-sans selection:bg-orange-500/30 pb-32" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 pointer-events-none overflow-hidden z-0" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-600/10 blur-[120px] animate-pulse" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-900/20 blur-[120px] animate-pulse", style: { animationDelay: "2s" } }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-slate-800/30 blur-[100px]" })), roundMsg && /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-orange-600 text-white px-12 py-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4 border-4 border-white/20 transform scale-110" }, /* @__PURE__ */ import_react3.default.createElement(Trophy, { size: 64, className: "text-yellow-300 animate-bounce" }), /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-4xl font-black uppercase tracking-widest" }, roundMsg), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-orange-200 font-bold text-lg" }, "Prepare-se para a pr\xF3xima!"))), warningMsg && /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed top-36 left-1/2 -translate-x-1/2 z-[500] bg-red-600 text-white px-8 py-4 rounded-xl shadow-[0_0_50px_rgba(220,38,38,0.5)] font-bold flex items-center gap-3 animate-in slide-in-from-top-4 fade-in border border-white/20" }, /* @__PURE__ */ import_react3.default.createElement(TriangleAlert, { size: 24, className: "text-yellow-300 animate-bounce" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-lg" }, warningMsg)), successMsg && /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed top-36 left-1/2 -translate-x-1/2 z-[500] bg-green-600 text-white px-8 py-4 rounded-xl shadow-[0_0_50px_rgba(34,197,94,0.5)] font-bold flex items-center gap-3 animate-in slide-in-from-top-4 fade-in border border-white/20" }, /* @__PURE__ */ import_react3.default.createElement(CircleCheck, { size: 24, className: "text-white animate-bounce" }), /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-lg" }, successMsg)), confirmModal && /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-slate-900 border border-white/10 rounded-2xl shadow-2xl p-6 w-full max-w-md text-center" }, /* @__PURE__ */ import_react3.default.createElement("h3", { className: "text-xl font-bold text-white mb-4" }, "Confirma\xE7\xE3o"), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-slate-300 mb-6" }, confirmModal.message), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex gap-3" }, /* @__PURE__ */ import_react3.default.createElement("button", { onClick: confirmModal.onCancel, className: "flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors" }, "Cancelar"), /* @__PURE__ */ import_react3.default.createElement("button", { onClick: confirmModal.onConfirm, className: "flex-1 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-xl transition-colors" }, "Confirmar")))), /* @__PURE__ */ import_react3.default.createElement("header", { className: "sticky top-0 z-40 backdrop-blur-xl bg-slate-950/90 border-b border-white/10 shadow-2xl transition-all duration-300 h-32 md:h-40" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-w-[1600px] mx-auto px-4 md:px-6 h-full flex items-center justify-between gap-4 md:gap-6" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "hidden sm:flex items-center gap-4 min-w-fit" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "bg-orange-600 p-2 rounded-xl shadow-lg shadow-orange-500/30" }, /* @__PURE__ */ import_react3.default.createElement(
       "img",
       {
