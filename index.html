@@ -2593,14 +2593,12 @@ ${body}`.trim();
               setPublicError("");
             }
           } catch (err) {
-            if (isActive) {
-              setPublicRoster([]);
+            if (isActive)
               setPublicError("Falha ao carregar a planilha do Google.");
-            }
           } finally {
             if (isActive)
               setPublicLoading(false);
-        }
+          }
       };
       fetchRoster();
       const intervalId = setInterval(fetchRoster, 5e3);
