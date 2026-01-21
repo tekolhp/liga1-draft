@@ -3147,6 +3147,7 @@ ${body}`.trim();
         let typeRaw = getCol("categoria", 3);
         typeRaw = typeRaw ? typeRaw.toUpperCase() : "REGULAR";
         const avatarRaw = getCol("fotourl", 4);
+        const teamRaw = getCol("time", 5);
         let pos = posRaw;
         const posMap = {
           "GK": "GOL",
@@ -3190,7 +3191,8 @@ ${body}`.trim();
           position: pos,
           type,
           rating: type === "CAPTAIN" ? 90 : type === "WILDCARD" ? 85 : 75,
-          avatar: avatarRaw || DEFAULT_AVATAR
+          avatar: avatarRaw || DEFAULT_AVATAR,
+          team: teamRaw || ""
         });
       }
       if (newPlayers.length > 0) {
@@ -3213,9 +3215,17 @@ ${body}`.trim();
             if (newId)
               remappedAssignments[newId] = previousAssignmentsByKey[key];
           });
+          const assignmentsFromSheet = {};
+          newPlayers.forEach((p) => {
+            if (!p.team)
+              return;
+            const teamMatch = INITIAL_TEAMS.find((t) => slugifyTeam(t.name) === slugifyTeam(p.team));
+            if (teamMatch)
+              assignmentsFromSheet[p.id] = teamMatch.id;
+          });
           const remappedHistory = (pickHistory || []).map((id) => previousIdToKey[id]).filter(Boolean).map((key) => newKeyToId[key]).filter(Boolean);
           setPlayers(newPlayers);
-          setAssignments(remappedAssignments);
+          setAssignments(isAuto ? assignmentsFromSheet : remappedAssignments);
           setPickHistory(remappedHistory);
           setCsvInput("");
           setSuccessMsg(`Sucesso! ${newPlayers.length} jogadores foram importados.`);
