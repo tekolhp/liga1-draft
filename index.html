@@ -2601,6 +2601,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     const [editingPlayer, setEditingPlayer] = (0, import_react3.useState)(null);
     const [allocatingPlayer, setAllocatingPlayer] = (0, import_react3.useState)(null);
     const [revealData, setRevealData] = (0, import_react3.useState)(null);
+    const lastLocalPickRef = (0, import_react3.useRef)(0);
     const [previewAvatar, setPreviewAvatar] = (0, import_react3.useState)("");
     const [socialTeam, setSocialTeam] = (0, import_react3.useState)(null);
     const [socialLogoOutlined, setSocialLogoOutlined] = (0, import_react3.useState)("");
@@ -3059,6 +3060,7 @@ ${body}`.trim();
         return;
       }
       playSound("pick");
+      lastLocalPickRef.current = Date.now();
       sendAssignmentToSheet(player.name || player.nickname || "", currentTeam.name);
       setAssignments((prev) => __spreadProps(__spreadValues({}, prev), { [player.id]: currentTeam.id }));
       setPickHistory((prev) => [...prev, player.id]);
@@ -3316,6 +3318,9 @@ ${body}`.trim();
         });
       };
     const handleSimpleImport = (rawData, isAuto = false) => {
+      if (isAuto && Date.now() - lastLocalPickRef.current < 3e3) {
+        return;
+      }
       if (!rawData || !rawData.trim()) {
         if (!isAuto)
           setWarningMsg("Por favor, cole a lista de jogadores.");
