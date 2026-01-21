@@ -2681,7 +2681,11 @@ ${body}`.trim();
         }
       };
       loadSheet();
-      return () => controller.abort();
+      const intervalId = setInterval(loadSheet, 5e3);
+      return () => {
+        clearInterval(intervalId);
+        controller.abort();
+      };
     }, []);
     (0, import_react3.useEffect)(() => {
       if (!teamRoute)
@@ -5657,6 +5661,9 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
+
+
 
 
 
