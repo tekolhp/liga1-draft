@@ -3100,6 +3100,7 @@ ${body}`.trim();
       newTeams.splice(index, 0, draggedItem);
       setDragItemIndex(index);
       setTeams(newTeams);
+      orderPersistRef.current = true;
     };
     const handleDragEnd = () => setDragItemIndex(null);
     const handleMoveTeam = (index, direction) => {
@@ -3110,6 +3111,7 @@ ${body}`.trim();
         [newTeams[index], newTeams[index + 1]] = [newTeams[index + 1], newTeams[index]];
       }
       setTeams(newTeams);
+      orderPersistRef.current = true;
     };
     const handleUpdateTeamName = (id, newName) => setTeams(teams.map((t) => t.id === id ? __spreadProps(__spreadValues({}, t), { name: newName }) : t));
     const handleUndo = () => {
