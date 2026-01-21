@@ -2484,7 +2484,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   function App() {
     const [players, setPlayers] = (0, import_react3.useState)(() => {
       try {
-        const saved = localStorage.getItem("liga1_draft_v45_players");
+        const saved = localStorage.getItem("liga1_draft_v46_players");
         return saved ? JSON.parse(saved) : DEFAULT_PLAYERS;
       } catch (e) {
         return DEFAULT_PLAYERS;
@@ -2492,7 +2492,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     });
     const [teams, setTeams] = (0, import_react3.useState)(() => {
       try {
-        const saved = localStorage.getItem("liga1_draft_v45_teams");
+        const saved = localStorage.getItem("liga1_draft_v46_teams");
         if (saved) {
           const parsed = JSON.parse(saved);
           if (!parsed[0].logo)
@@ -2509,7 +2509,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     });
     const [assignments, setAssignments] = (0, import_react3.useState)(() => {
       try {
-        const saved = localStorage.getItem("liga1_draft_v45_assignments");
+        const saved = localStorage.getItem("liga1_draft_v46_assignments");
         return saved ? JSON.parse(saved) : {};
       } catch (e) {
         return {};
@@ -2531,7 +2531,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     const [isShuffling, setIsShuffling] = (0, import_react3.useState)(false);
     const [currentPickIndex, setCurrentPickIndex] = (0, import_react3.useState)(() => {
       try {
-        const saved = localStorage.getItem("liga1_draft_v45_pickIndex");
+        const saved = localStorage.getItem("liga1_draft_v46_pickIndex");
         return saved ? JSON.parse(saved) : 0;
       } catch (e) {
         return 0;
@@ -2539,7 +2539,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     });
     const [pickHistory, setPickHistory] = (0, import_react3.useState)(() => {
       try {
-        const saved = localStorage.getItem("liga1_draft_v45_pickHistory");
+        const saved = localStorage.getItem("liga1_draft_v46_pickHistory");
         return saved ? JSON.parse(saved) : [];
       } catch (e) {
         return [];
@@ -2740,11 +2740,11 @@ ${body}`.trim();
       }
     }, [isAllocationMode, isReadyToStart]);
     (0, import_react3.useEffect)(() => {
-      localStorage.setItem("liga1_draft_v45_players", JSON.stringify(players));
-      localStorage.setItem("liga1_draft_v45_teams", JSON.stringify(teams));
-      localStorage.setItem("liga1_draft_v45_assignments", JSON.stringify(assignments));
-      localStorage.setItem("liga1_draft_v45_pickIndex", JSON.stringify(currentPickIndex));
-      localStorage.setItem("liga1_draft_v45_pickHistory", JSON.stringify(pickHistory));
+      localStorage.setItem("liga1_draft_v46_players", JSON.stringify(players));
+      localStorage.setItem("liga1_draft_v46_teams", JSON.stringify(teams));
+      localStorage.setItem("liga1_draft_v46_assignments", JSON.stringify(assignments));
+      localStorage.setItem("liga1_draft_v46_pickIndex", JSON.stringify(currentPickIndex));
+      localStorage.setItem("liga1_draft_v46_pickHistory", JSON.stringify(pickHistory));
     }, [players, teams, assignments, currentPickIndex, pickHistory]);
     (0, import_react3.useEffect)(() => {
       localStorage.setItem("liga1_draft_muted", isMuted);
@@ -5676,6 +5676,7 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
 
 
 
