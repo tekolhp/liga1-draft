@@ -2401,6 +2401,37 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       return "border-purple-500/50 ring-1 ring-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]";
     return "border-white/5";
   };
+  var createOutlinedPng = (src, options = {}) => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+      const thickness = Number(options.thickness ?? 8);
+      const color = options.color ?? "#ffffff";
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        resolve(src);
+        return;
+      }
+      canvas.width = img.width + thickness * 2;
+      canvas.height = img.height + thickness * 2;
+      for (let x = -thickness; x <= thickness; x++) {
+        for (let y = -thickness; y <= thickness; y++) {
+          if (x * x + y * y <= thickness * thickness) {
+            ctx.drawImage(img, thickness + x, thickness + y);
+          }
+        }
+      }
+      ctx.globalCompositeOperation = "source-in";
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = "source-over";
+      ctx.drawImage(img, thickness, thickness);
+      resolve(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => reject(new Error("Failed to load image for outline"));
+    img.src = src;
+  });
   function App() {
     const [players, setPlayers] = (0, import_react3.useState)(() => {
       try {
@@ -2479,6 +2510,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     const [revealData, setRevealData] = (0, import_react3.useState)(null);
     const [previewAvatar, setPreviewAvatar] = (0, import_react3.useState)("");
     const [socialTeam, setSocialTeam] = (0, import_react3.useState)(null);
+    const [socialLogoOutlined, setSocialLogoOutlined] = (0, import_react3.useState)("");
     const socialRef = (0, import_react3.useRef)(null);
     const [searchTerm, setSearchTerm] = (0, import_react3.useState)("");
     const [filterPos, setFilterPos] = (0, import_react3.useState)("TODOS");
@@ -2500,6 +2532,23 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         document.body.appendChild(script);
       }
     }, []);
+    (0, import_react3.useEffect)(() => {
+      let isActive = true;
+      if (!socialTeam) {
+        setSocialLogoOutlined("");
+        return;
+      }
+      createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 10 }).then((dataUrl) => {
+        if (isActive)
+          setSocialLogoOutlined(dataUrl);
+      }).catch(() => {
+        if (isActive)
+          setSocialLogoOutlined("");
+      });
+      return () => {
+        isActive = false;
+      };
+    }, [socialTeam]);
     (0, import_react3.useEffect)(() => {
       const controller = new AbortController();
       const csvEscape = (value) => {
@@ -3824,7 +3873,7 @@ Neymar, MEI ARM
         ref: socialRef,
         className: "fixed top-0 left-[-9999px] w-[1080px] h-[1080px] bg-white text-slate-900 overflow-hidden font-sans flex flex-row"
       },
-      /* @__PURE__ */ import_react3.default.createElement("div", { className: `w-[340px] h-full bg-gradient-to-b ${socialTeam.color} flex flex-col items-center justify-center p-12 text-white relative overflow-hidden shrink-0` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')]" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 opacity-40 blur-[80px] scale-[2.2]", style: { backgroundImage: `url(${socialTeam.logo})`, backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" } }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-64 h-64 p-2 flex items-center justify-center relative z-10 shrink-0 transform scale-110" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: socialTeam.logo, className: "w-full h-full object-contain rounded-full border-4 border-white/80 shadow-[0_20px_50px_rgba(0,0,0,0.3)]", crossorigin: "anonymous" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" })),
+      /* @__PURE__ */ import_react3.default.createElement("div", { className: `w-[340px] h-full bg-gradient-to-b ${socialTeam.color} flex flex-col items-center justify-center p-12 text-white relative overflow-hidden shrink-0` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/diagmonds-light.png')]" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 opacity-40 blur-[80px] scale-[2.2]", style: { backgroundImage: `url(${socialTeam.logo})`, backgroundSize: "contain", backgroundPosition: "center", backgroundRepeat: "no-repeat" } }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-64 h-64 p-2 flex items-center justify-center relative z-10 shrink-0 transform scale-110" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: socialLogoOutlined || socialTeam.logo, className: "w-full h-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]", crossorigin: "anonymous" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" })),
       /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 h-full bg-slate-50 p-12 flex flex-col relative" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute right-[-150px] bottom-[-150px] w-[800px] h-[800px] opacity-[0.03] pointer-events-none grayscale" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: socialTeam.logo, className: "w-full h-full object-contain", crossorigin: "anonymous" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mb-10 border-b-4 border-slate-200 pb-6 relative z-10" }, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-6xl font-black text-slate-800 uppercase tracking-tight leading-none mb-1" }, "Escala\xE7\xE3o Oficial"), (() => {
         const len = socialTeam.name.length;
         let sizeClass = "text-5xl";
