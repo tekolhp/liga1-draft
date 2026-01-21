@@ -2743,7 +2743,7 @@ ${body}`.trim();
       const intervalId = setInterval(() => {
         loadSheet();
         loadOrder();
-      }, 5e3);
+      }, 2e3);
       return () => {
         clearInterval(intervalId);
         controller.abort();
@@ -2776,7 +2776,7 @@ ${body}`.trim();
           }
       };
       fetchRoster();
-      const intervalId = setInterval(fetchRoster, 5e3);
+      const intervalId = setInterval(fetchRoster, 2e3);
       return () => {
         isActive = false;
         clearInterval(intervalId);
@@ -5732,6 +5732,8 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
+
 
 
 
