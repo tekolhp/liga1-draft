@@ -2316,6 +2316,15 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     return "bg-slate-700 text-white border-slate-600";
   };
   var slugifyTeam = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  var isTeamSlugMatch = (rawA, rawB) => {
+    if (!rawA || !rawB)
+      return false;
+    const a = slugifyTeam(rawA);
+    const b = slugifyTeam(rawB);
+    if (!a || !b)
+      return false;
+    return a === b || a.includes(b) || b.includes(a);
+  };
   var normalizePlayerKey = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   var parseSheetCsv = (rawData) => {
     if (!rawData)
@@ -2698,7 +2707,7 @@ ${body}`.trim();
           const text = await response.text();
             const entries = parseSheetCsv(text);
             const targetSlug = slugifyTeam(teamRoute);
-            const filtered = entries.filter((entry) => entry.team && slugifyTeam(entry.team) === targetSlug);
+            const filtered = entries.filter((entry) => entry.team && isTeamSlugMatch(entry.team, teamRoute));
             const typeOrder = { CAPTAIN: 0, WILDCARD: 1, REGULAR: 2 };
             filtered.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));
             if (isActive) {
@@ -3338,7 +3347,7 @@ ${body}`.trim();
           newPlayers.forEach((p) => {
             if (!p.team)
               return;
-            const teamMatch = INITIAL_TEAMS.find((t) => slugifyTeam(t.name) === slugifyTeam(p.team));
+            const teamMatch = INITIAL_TEAMS.find((t) => isTeamSlugMatch(t.name, p.team));
             if (teamMatch)
               assignmentsFromSheet[p.id] = teamMatch.id;
           });
@@ -5661,6 +5670,10 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
+
+
+
 
 
 
