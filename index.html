@@ -3356,7 +3356,7 @@ ${body}`.trim();
           setAssignments(isAuto ? assignmentsFromSheet : remappedAssignments);
           setPickHistory(remappedHistory);
           setCsvInput("");
-          setSuccessMsg(`Sucesso! ${newPlayers.length} jogadores foram importados.`);
+          if (!isAuto) setSuccessMsg(`Sucesso! ${newPlayers.length} jogadores foram importados.`);
           setConfirmModal(null);
         };
         if (isAuto) {
@@ -5670,6 +5670,7 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
 
 
 
