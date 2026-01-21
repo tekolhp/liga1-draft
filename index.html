@@ -2316,6 +2316,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     return "bg-slate-700 text-white border-slate-600";
   };
   var slugifyTeam = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  var normalizePlayerKey = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   var parseSheetCsv = (rawData) => {
     if (!rawData)
       return [];
@@ -2389,7 +2390,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         type = "WILDCARD";
       const avatar = getCol(headerIndex.fotourl, 4) || DEFAULT_AVATAR;
       const team = getCol(headerIndex.time, 5);
-      entries.push({ name, position, type, avatar, team });
+      entries.push({ id: normalizePlayerKey(name), name, position, type, avatar, team });
     }
     return entries;
   };
@@ -3104,7 +3105,6 @@ ${body}`.trim();
       const normalizedInput = rawData.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
       const rows = normalizedInput.split("\n").filter((r) => r.trim() !== "");
       const newPlayers = [];
-      let currentId = 1;
       const normalizeHeader = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
       const headerCells = rows[0]?.split(/[,;\t]/).map((cell) => normalizeHeader(cell));
       const findHeader = (keys) => {
@@ -3185,7 +3185,7 @@ ${body}`.trim();
         if (typeRaw.includes("WILD") || typeRaw.includes("CORINGA") || typeRaw.includes("ESTRELA") || typeRaw === "WC")
           type = "WILDCARD";
         newPlayers.push({
-          id: currentId++,
+          id: normalizePlayerKey(name),
           name,
           position: pos,
           type,
@@ -3195,7 +3195,28 @@ ${body}`.trim();
       }
       if (newPlayers.length > 0) {
         const process = () => {
+          const previousAssignmentsByKey = {};
+          const previousIdToKey = {};
+          players.forEach((p) => {
+            const key = normalizePlayerKey(p.name);
+            previousIdToKey[p.id] = key;
+            if (assignments[p.id])
+              previousAssignmentsByKey[key] = assignments[p.id];
+          });
+          const newKeyToId = {};
+          newPlayers.forEach((p) => {
+            newKeyToId[normalizePlayerKey(p.name)] = p.id;
+          });
+          const remappedAssignments = {};
+          Object.keys(previousAssignmentsByKey).forEach((key) => {
+            const newId = newKeyToId[key];
+            if (newId)
+              remappedAssignments[newId] = previousAssignmentsByKey[key];
+          });
+          const remappedHistory = (pickHistory || []).map((id) => previousIdToKey[id]).filter(Boolean).map((key) => newKeyToId[key]).filter(Boolean);
           setPlayers(newPlayers);
+          setAssignments(remappedAssignments);
+          setPickHistory(remappedHistory);
           setCsvInput("");
           setSuccessMsg(`Sucesso! ${newPlayers.length} jogadores foram importados.`);
           setConfirmModal(null);
