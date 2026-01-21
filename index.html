@@ -2585,19 +2585,21 @@ ${body}`.trim();
         try {
           const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
           const text = await response.text();
-          const entries = parseSheetCsv(text);
-          const targetSlug = slugifyTeam(teamRoute);
-          const filtered = entries.filter((entry) => slugifyTeam(entry.team || "") === targetSlug);
-          if (isActive) {
-            setPublicRoster(filtered);
-            setPublicError("");
-          }
-        } catch (err) {
-          if (isActive)
-            setPublicError("Falha ao carregar a planilha do Google.");
-        } finally {
-          if (isActive)
-            setPublicLoading(false);
+            const entries = parseSheetCsv(text);
+            const targetSlug = slugifyTeam(teamRoute);
+            const filtered = entries.filter((entry) => entry.team && slugifyTeam(entry.team) === targetSlug);
+            if (isActive) {
+              setPublicRoster(filtered);
+              setPublicError("");
+            }
+          } catch (err) {
+            if (isActive) {
+              setPublicRoster([]);
+              setPublicError("Falha ao carregar a planilha do Google.");
+            }
+          } finally {
+            if (isActive)
+              setPublicLoading(false);
         }
       };
       fetchRoster();
