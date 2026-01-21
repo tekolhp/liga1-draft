@@ -3802,24 +3802,29 @@ Neymar, MEI ARM
         else if (len > 12)
           sizeClass = "text-4xl";
         return /* @__PURE__ */ import_react3.default.createElement("h1", { className: `${sizeClass} font-bold text-slate-400 uppercase tracking-wide` }, socialTeam.name);
-      })()), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 gap-x-8 gap-y-6 content-start flex-1 relative z-10" }, players.filter((p) => assignments[p.id] === socialTeam.id).sort((a, b) => {
-        const score = (p) => {
-          if (p.type === "CAPTAIN")
-            return 4;
-          if (p.type === "WILDCARD")
-            return 3;
-          if (p.position === "GOL")
-            return 2;
-          return 1;
-        };
-        return score(b) - score(a) || a.name.localeCompare(b.name);
-      }).map((p, idx) => {
+      })()), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 gap-x-8 gap-y-6 content-start flex-1 relative z-10" }, (() => {
+        const teamPlayers = players.filter((p) => assignments[p.id] === socialTeam.id);
+        const captains = teamPlayers.filter((p) => p.type === "CAPTAIN").sort((a, b) => a.name.localeCompare(b.name));
+        const wildcards = teamPlayers.filter((p) => p.type === "WILDCARD").sort((a, b) => a.name.localeCompare(b.name));
+        const others = teamPlayers.filter((p) => p.type !== "CAPTAIN" && p.type !== "WILDCARD").sort((a, b) => a.name.localeCompare(b.name));
+        const ordered = [...captains];
+        if (captains.length === 1)
+          ordered.push({ __placeholder: true, id: "cap-placeholder" });
+        ordered.push(...wildcards);
+        if (wildcards.length === 1)
+          ordered.push({ __placeholder: true, id: "wild-placeholder" });
+        ordered.push(...others);
+        return ordered;
+      })().map((p, idx) => {
         const isCap = p.type === "CAPTAIN";
         const isWild = p.type === "WILDCARD";
         const isGk = p.position === "GOL";
         let borderClass = "border-l-4 border-slate-200";
         let bgClass = "bg-white";
         let textClass = "text-slate-900";
+        if (p.__placeholder) {
+          return /* @__PURE__ */ import_react3.default.createElement("div", { key: `placeholder-${p.id}-${idx}`, className: "invisible" });
+        }
         if (isCap) {
           borderClass = "border-l-8 border-yellow-500";
           bgClass = "bg-yellow-50";
@@ -3837,7 +3842,7 @@ Neymar, MEI ARM
           nameSizeClass = "text-2xl";
         else if (nameLength > 12)
           nameSizeClass = "text-3xl";
-        return /* @__PURE__ */ import_react3.default.createElement("div", { key: idx, className: `flex items-center p-4 shadow-sm rounded-r-xl ${bgClass} ${borderClass} relative overflow-hidden` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-20 h-20 shrink-0 mr-5 relative" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full h-full rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-200" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: p.avatar, className: "w-full h-full object-cover", crossorigin: "anonymous" })), isCap && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-yellow-500 text-white p-1.5 rounded-full shadow-sm border-2 border-white" }, /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 14, fill: "currentColor" })), isWild && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-purple-600 text-white p-1.5 rounded-full shadow-sm border-2 border-white" }, /* @__PURE__ */ import_react3.default.createElement(Star, { size: 14, fill: "currentColor" })), isGk && !isCap && !isWild && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-slate-800 text-white p-1.5 rounded-full shadow-sm border-2 border-white text-xs" }, "\u{1F9E4}")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-0 z-10" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between mb-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs font-black text-slate-400 uppercase tracking-wider" }, p.position)), /* @__PURE__ */ import_react3.default.createElement("h3", { className: `${nameSizeClass} font-black ${textClass} uppercase leading-none break-words tracking-tight` }, p.name)));
+        return /* @__PURE__ */ import_react3.default.createElement("div", { key: idx, className: `flex items-center p-4 shadow-sm rounded-r-xl ${bgClass} ${borderClass} relative overflow-hidden` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-20 h-20 shrink-0 mr-5 relative" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-full h-full rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-200" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: p.avatar, className: "w-full h-full object-cover object-top", crossorigin: "anonymous" })), isCap && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-yellow-500 text-white p-1.5 rounded-full shadow-sm border-2 border-white" }, /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 14, fill: "currentColor" })), isWild && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-purple-600 text-white p-1.5 rounded-full shadow-sm border-2 border-white" }, /* @__PURE__ */ import_react3.default.createElement(Star, { size: 14, fill: "currentColor" })), isGk && !isCap && !isWild && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute -top-2 -right-2 bg-slate-800 text-white p-1.5 rounded-full shadow-sm border-2 border-white text-xs" }, "\u{1F9E4}")), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 min-w-0 z-10" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center justify-between mb-1" }, /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-xs font-black text-slate-400 uppercase tracking-wider" }, p.position)), /* @__PURE__ */ import_react3.default.createElement("h3", { className: `${nameSizeClass} font-black ${textClass} uppercase leading-none tracking-tight truncate` }, p.name)));
       })))
     ));
   }
