@@ -2538,7 +2538,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         setSocialLogoOutlined("");
         return;
       }
-      createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 10 }).then((dataUrl) => {
+      createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 60 }).then((dataUrl) => {
         if (isActive)
           setSocialLogoOutlined(dataUrl);
       }).catch(() => {
