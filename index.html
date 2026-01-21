@@ -2325,6 +2325,25 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       return false;
     return a === b || a.includes(b) || b.includes(a);
   };
+  var readTeamOrderFromSheet = async () => {
+    try {
+      const response = await fetch(`${SHEET_WRITE_URL}?action=read_order&sheet=Sheet2`, { cache: "no-store" });
+      const data = await response.json();
+      return Array.isArray(data?.order) ? data.order : [];
+    } catch (err) {
+      return [];
+    }
+  };
+  var saveTeamOrderToSheet = async (orderNames) => {
+    try {
+      await fetch(SHEET_WRITE_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "save_order", sheet: "Sheet2", order: orderNames })
+      });
+    } catch (err) {
+    }
+  };
   var normalizePlayerKey = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   var parseSheetCsv = (rawData) => {
     if (!rawData)
@@ -2507,6 +2526,31 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         return INITIAL_TEAMS;
       }
     });
+    const orderPersistRef = (0, import_react3.useRef)(false);
+    const applyTeamOrderFromNames = (orderNames) => {
+      if (!Array.isArray(orderNames) || orderNames.length === 0)
+        return;
+      setTeams((prev) => {
+        const used = /* @__PURE__ */ new Set();
+        const ordered = [];
+        orderNames.forEach((name) => {
+          const match = prev.find((team) => isTeamSlugMatch(team.name, name));
+          if (match && !used.has(match.id)) {
+            ordered.push(match);
+            used.add(match.id);
+          }
+        });
+        const remaining = prev.filter((team) => !used.has(team.id));
+        return [...ordered, ...remaining];
+      });
+    };
+    (0, import_react3.useEffect)(() => {
+      if (!orderPersistRef.current)
+        return;
+      orderPersistRef.current = false;
+      const names = teams.map((t) => t.name);
+      saveTeamOrderToSheet(names);
+    }, [teams]);
     const [assignments, setAssignments] = (0, import_react3.useState)(() => {
       try {
         const saved = localStorage.getItem("liga1_draft_v46_assignments");
@@ -2690,7 +2734,16 @@ ${body}`.trim();
         }
       };
       loadSheet();
-      const intervalId = setInterval(loadSheet, 5e3);
+      const loadOrder = async () => {
+        const order = await readTeamOrderFromSheet();
+        if (order.length)
+          applyTeamOrderFromNames(order);
+      };
+      loadOrder();
+      const intervalId = setInterval(() => {
+        loadSheet();
+        loadOrder();
+      }, 5e3);
       return () => {
         clearInterval(intervalId);
         controller.abort();
@@ -3095,6 +3148,7 @@ ${body}`.trim();
         if (shuffleCount >= maxShuffles) {
           clearInterval(intervalId);
           setIsShuffling(false);
+          orderPersistRef.current = true;
           setSuccessMsg("Ordem definida aleatoriamente!");
           playSound("start");
         }
@@ -5676,6 +5730,8 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
+
 
 
 
