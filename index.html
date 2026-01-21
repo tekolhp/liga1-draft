@@ -2461,6 +2461,17 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     img.onerror = () => reject(new Error("Failed to load image for blur"));
     img.src = src;
   });
+  var waitForImageLoad = (src) => new Promise((resolve) => {
+    if (!src) {
+      resolve();
+      return;
+    }
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = src;
+  });
   function App() {
     const [players, setPlayers] = (0, import_react3.useState)(() => {
       try {
@@ -2541,6 +2552,8 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     const [socialTeam, setSocialTeam] = (0, import_react3.useState)(null);
     const [socialLogoOutlined, setSocialLogoOutlined] = (0, import_react3.useState)("");
     const [socialLogoBlurred, setSocialLogoBlurred] = (0, import_react3.useState)("");
+    const socialLogoOutlinedRef = (0, import_react3.useRef)("");
+    const socialLogoBlurredRef = (0, import_react3.useRef)("");
     const socialRef = (0, import_react3.useRef)(null);
     const [searchTerm, setSearchTerm] = (0, import_react3.useState)("");
     const [filterPos, setFilterPos] = (0, import_react3.useState)("TODOS");
@@ -2587,6 +2600,12 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         isActive = false;
       };
     }, [socialTeam]);
+    (0, import_react3.useEffect)(() => {
+      socialLogoOutlinedRef.current = socialLogoOutlined;
+    }, [socialLogoOutlined]);
+    (0, import_react3.useEffect)(() => {
+      socialLogoBlurredRef.current = socialLogoBlurred;
+    }, [socialLogoBlurred]);
     (0, import_react3.useEffect)(() => {
       const controller = new AbortController();
       const csvEscape = (value) => {
@@ -2769,8 +2788,17 @@ ${body}`.trim();
       };
     const handleExportSocial = (team) => {
       setSocialTeam(team);
-      setTimeout(() => {
+      setTimeout(async () => {
         if (socialRef.current && window.html2canvas) {
+          const start = Date.now();
+          while (Date.now() - start < 2e3) {
+            if (socialLogoOutlinedRef.current && socialLogoBlurredRef.current)
+              break;
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          const blurSrc = socialLogoBlurredRef.current || team.logo;
+          const outlineSrc = socialLogoOutlinedRef.current || team.logo;
+          await Promise.all([waitForImageLoad(blurSrc), waitForImageLoad(outlineSrc), waitForImageLoad(team.logo)]);
           window.html2canvas(socialRef.current, {
             backgroundColor: null,
             scale: 2,
@@ -2793,7 +2821,7 @@ ${body}`.trim();
           setWarningMsg("Biblioteca de imagem n\xE3o carregada. Aguarde um momento.");
           setSocialTeam(null);
         }
-      }, 500);
+      }, 600);
     };
     const draftOrder = (0, import_react3.useMemo)(() => {
       const order = [];
