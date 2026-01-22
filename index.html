@@ -2760,12 +2760,20 @@ ${body}`.trim();
           const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
           const text = await response.text();
             const entries = parseSheetCsv(text);
-            const targetSlug = slugifyTeam(teamRoute);
-            const filtered = entries.filter((entry) => entry.team && isTeamSlugMatch(entry.team, teamRoute));
             const typeOrder = { CAPTAIN: 0, WILDCARD: 1, REGULAR: 2 };
-            filtered.sort((a, b) => (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3));
+            const chosen = entries.filter((entry) => entry.team && isTeamSlugMatch(entry.team, teamRoute));
+            const available = entries.filter((entry) => !entry.team);
+            const sortPlayers = (list) => list.sort((a, b) => {
+              const typeDiff = (typeOrder[a.type] ?? 3) - (typeOrder[b.type] ?? 3);
+              if (typeDiff !== 0)
+                return typeDiff;
+              return a.name.localeCompare(b.name);
+            });
+            sortPlayers(chosen);
+            sortPlayers(available);
+            const ordered = [...chosen, ...available];
             if (isActive) {
-              setPublicRoster(filtered);
+              setPublicRoster(ordered);
               setPublicError("");
             }
           } catch (err) {
@@ -3652,10 +3660,13 @@ ${body}`.trim();
       return "text-red-500 animate-pulse font-black scale-110";
     };
     const teamInfo = teamRoute ? INITIAL_TEAMS.find((t) => t.name === teamRoute) : null;
-    const captain = publicRoster.find((player) => player.type === "CAPTAIN") || null;
-    const wildcards = publicRoster.filter((player) => player.type === "WILDCARD");
-    const others = publicRoster.filter((player) => player.type !== "CAPTAIN" && player.type !== "WILDCARD");
-    const renderTeamCard = (player, keySuffix) => /* @__PURE__ */ import_react3.default.createElement("div", { key: `${keySuffix}-${player.name}`, className: `card group relative aspect-[3/4] rounded-2xl overflow-hidden transition-all duration-300 border border-white/5  ${getCardTypeStyle(player.type)}` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 transition-colors duration-500 bg-slate-900" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: player.avatar, className: "absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:scale-110" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" }), player.isBlocked && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 bg-slate-950/70 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.3em] text-slate-200" }, "BLOQUEADO"), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-3 right-3 flex gap-1" }, player.type === "CAPTAIN" && /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 16, className: "text-yellow-400 drop-shadow-md", fill: "currentColor" }), player.type === "WILDCARD" && /* @__PURE__ */ import_react3.default.createElement(Star, { size: 16, className: "text-purple-400 drop-shadow-md", fill: "currentColor" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 p-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shadow-sm backdrop-blur-md border border-white/10 ${getPositionBadgeStyle(player.position)}` }, player.position), /* @__PURE__ */ import_react3.default.createElement("h3", { className: "mt-1 font-black text-xs uppercase tracking-tight text-white" }, player.name), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mt-2 h-1 w-full rounded-full bg-white/10 overflow-hidden" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `h-full w-full bg-gradient-to-r ${teamInfo ? teamInfo.color : "from-orange-500 to-orange-600"}` })))));
+    const teamAssigned = publicRoster.filter((player) => player.team && isTeamSlugMatch(player.team, teamRoute));
+    const captain = teamAssigned.find((player) => player.type === "CAPTAIN") || null;
+    const wildcards = teamAssigned.filter((player) => player.type === "WILDCARD");
+    const assignedRegular = teamAssigned.filter((player) => player.type !== "CAPTAIN" && player.type !== "WILDCARD");
+    const available = publicRoster.filter((player) => !player.team);
+    const others = [...assignedRegular, ...available];
+    const renderTeamCard = (player, keySuffix) => /* @__PURE__ */ import_react3.default.createElement("div", { key: `${keySuffix}-${player.name}`, className: `card group relative aspect-[3/4] rounded-2xl overflow-hidden transition-all duration-300 border border-white/5  ${getCardTypeStyle(player.type)}` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 transition-colors duration-500 bg-slate-900" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: player.avatar, className: "absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:scale-110" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-3 right-3 flex gap-1" }, player.type === "CAPTAIN" && /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 16, className: "text-yellow-400 drop-shadow-md", fill: "currentColor" }), player.type === "WILDCARD" && /* @__PURE__ */ import_react3.default.createElement(Star, { size: 16, className: "text-purple-400 drop-shadow-md", fill: "currentColor" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 p-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shadow-sm backdrop-blur-md border border-white/10 ${getPositionBadgeStyle(player.position)}` }, player.position), /* @__PURE__ */ import_react3.default.createElement("h3", { className: "mt-1 font-black text-xs uppercase tracking-tight text-white" }, player.name), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mt-2 h-1 w-full rounded-full bg-white/10 overflow-hidden" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `h-full w-full bg-gradient-to-r ${teamInfo ? teamInfo.color : "from-orange-500 to-orange-600"}` })))));
     if (teamRoute) {
       return /* @__PURE__ */ import_react3.default.createElement("div", { className: "h-[100dvh] bg-slate-900 text-slate-100 font-sans selection:bg-orange-500/30 overflow-hidden" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "fixed inset-0 pointer-events-none overflow-hidden z-0" }, teamInfo && /* @__PURE__ */ import_react3.default.createElement("img", { src: teamInfo.logo, className: "absolute inset-0 w-full h-full object-contain opacity-[0.06] blur-sm scale-110" }), teamInfo && /* @__PURE__ */ import_react3.default.createElement("div", { className: `absolute inset-0 opacity-30 blur-[140px] bg-gradient-to-br ${teamInfo.color}` }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-orange-600/10 blur-[120px] animate-pulse" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-900/20 blur-[120px] animate-pulse", style: { animationDelay: "2s" } }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-slate-800/30 blur-[100px]" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "relative z-10 h-[100dvh] overflow-y-auto overflow-x-hidden overscroll-contain", style: { WebkitOverflowScrolling: "touch" } }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "max-w-[1200px] mx-auto px-2 pt-10 pb-24 box-border", style: { transform: "scale(2)", transformOrigin: "top center", width: "50%", marginLeft: "25%" } }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "space-y-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 gap-4 items-start" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex flex-col items-end justify-center gap-4 p-4 text-right aspect-[3/4]" }, teamInfo && /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-20 h-20 bg-slate-900/60 rounded-2xl border border-white/10 flex items-center justify-center p-2 shadow-lg" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: teamInfo.logo, className: "w-full h-full object-contain" })), /* @__PURE__ */ import_react3.default.createElement("div", null, /* @__PURE__ */ import_react3.default.createElement("h2", { className: "text-2xl font-black uppercase tracking-tight text-white" }, teamRoute), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-xs text-slate-400 font-bold uppercase tracking-widest" }, publicRoster.length, " jogadores"))), captain ? renderTeamCard(captain, "captain") : /* @__PURE__ */ import_react3.default.createElement("div", { className: "rounded-2xl border border-white/5 bg-slate-900/40 aspect-[3/4]" })), wildcards.length > 0 && /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 gap-4" }, wildcards.slice(0, 2).map((player, idx) => renderTeamCard(player, `wildcard-${idx}`))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "grid grid-cols-2 gap-4" }, others.map((player, idx) => renderTeamCard(player, `player-${idx}`)))))));
     }
@@ -5772,6 +5783,10 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
+
+
+
 
 
 
