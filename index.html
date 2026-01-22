@@ -3664,7 +3664,19 @@ ${body}`.trim();
     const captain = teamAssigned.find((player) => player.type === "CAPTAIN") || null;
     const wildcards = teamAssigned.filter((player) => player.type === "WILDCARD");
     const assignedRegular = teamAssigned.filter((player) => player.type !== "CAPTAIN" && player.type !== "WILDCARD");
-    const available = publicRoster.filter((player) => !player.team);
+    const teamHasGoalie = teamAssigned.some((player) => player.position === "GOL");
+    const forceGoaliePickForTeam = !isDraftComplete && teamAssigned.length >= 10 && !teamHasGoalie;
+    const available = publicRoster.filter((player) => {
+      if (player.team)
+        return false;
+      if (isAllocationMode && player.type === "REGULAR" && !isDraftComplete)
+        return false;
+      if (!isAllocationMode && player.position === "GOL" && teamHasGoalie)
+        return false;
+      if (!isAllocationMode && forceGoaliePickForTeam && player.position !== "GOL")
+        return false;
+      return true;
+    });
     const others = [...assignedRegular, ...available];
     const renderTeamCard = (player, keySuffix) => /* @__PURE__ */ import_react3.default.createElement("div", { key: `${keySuffix}-${player.name}`, className: `card group relative aspect-[3/4] rounded-2xl overflow-hidden transition-all duration-300 border border-white/5  ${getCardTypeStyle(player.type)}` }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 transition-colors duration-500 bg-slate-900" }, /* @__PURE__ */ import_react3.default.createElement("img", { src: player.avatar, className: "absolute inset-0 w-full h-full object-cover transition-all duration-500 opacity-100 group-hover:scale-110" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" }), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-3 right-3 flex gap-1" }, player.type === "CAPTAIN" && /* @__PURE__ */ import_react3.default.createElement(Crown, { size: 16, className: "text-yellow-400 drop-shadow-md", fill: "currentColor" }), player.type === "WILDCARD" && /* @__PURE__ */ import_react3.default.createElement(Star, { size: 16, className: "text-purple-400 drop-shadow-md", fill: "currentColor" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute bottom-0 left-0 right-0 p-3" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `inline-block px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider shadow-sm backdrop-blur-md border border-white/10 ${getPositionBadgeStyle(player.position)}` }, player.position), /* @__PURE__ */ import_react3.default.createElement("h3", { className: "mt-1 font-black text-xs uppercase tracking-tight text-white" }, player.name), /* @__PURE__ */ import_react3.default.createElement("div", { className: "mt-2 h-1 w-full rounded-full bg-white/10 overflow-hidden" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: `h-full w-full bg-gradient-to-r ${teamInfo ? teamInfo.color : "from-orange-500 to-orange-600"}` })))));
     if (teamRoute) {
@@ -5783,6 +5795,7 @@ react/cjs/react.development.js:
     
 
 <script id="html2canvas-script" src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" async=""></script></body></html>
+
 
 
 
