@@ -1174,7 +1174,7 @@
   };
   var getPlayerBadge = (type) => {
     if (type === "CAPTAIN")
-      return "[CAPITÃO] ";
+      return "[CAPITï¿½O] ";
     if (type === "WILDCARD")
       return "[WILDCARD] ";
     return "";
@@ -1250,6 +1250,31 @@
     img.onerror = () => resolve();
     img.src = src;
   });
+  var loadImageToCache = async (url) => {
+    try {
+      const cacheKey = `liga1_logo_cache_${btoa(url).slice(0, 50)}`;
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) return cached;
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          try {
+            const base64 = reader.result;
+            localStorage.setItem(cacheKey, base64);
+            resolve(base64);
+          } catch (e) {
+            resolve(url);
+          }
+        };
+        reader.onerror = () => resolve(url);
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      return url;
+    }
+  };
   function App() {
     const [players, setPlayers] = (0, import_react3.useState)(() => {
       try {
@@ -1606,10 +1631,23 @@ ${body}`.trim();
           }
       };
       fetchRoster();
+      const intervalId = setInterval(() => {
+        if (isActive) {
+          fetchRoster();
+        }
+      }, CONFIG.POLL_INTERVAL);
       return () => {
         isActive = false;
+        clearInterval(intervalId);
       };
     }, [teamRoute]);
+    (0, import_react3.useEffect)(() => {
+      const preloadLogos = async () => {
+        const logoUrls = teams.map((t) => t.logo).filter(Boolean);
+        await Promise.all(logoUrls.map((url) => loadImageToCache(url).catch(() => {})));
+      };
+      preloadLogos();
+    }, []);
     const unassignedCaptains = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "CAPTAIN" && !assignments[p.id]), [players, assignments]);
     const unassignedWildcards = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "WILDCARD" && !assignments[p.id]), [players, assignments]);
     const isReadyToStart = unassignedCaptains.length === 0 && unassignedWildcards.length === 0;
@@ -1645,10 +1683,10 @@ ${body}`.trim();
         const audio = new Audio(SOUNDS_URLS[type]);
         audio.volume = type === "tick" ? 0.3 : 0.6;
         audio.play().catch((err) => {
-          console.warn("Erro ao tocar áudio:", err);
+          console.warn("Erro ao tocar ï¿½udio:", err);
         });
       } catch (e) {
-        console.warn("Erro ao criar áudio:", e);
+        console.warn("Erro ao criar ï¿½udio:", e);
       }
     };
       const sendAssignmentToSheet = async (playerName, teamName) => {
@@ -1913,7 +1951,7 @@ ${body}`.trim();
     };
     const handleCardClick = async (player) => {
       if (!player || !player.id) {
-        console.warn("handleCardClick chamado com player inválido");
+        console.warn("handleCardClick chamado com player invï¿½lido");
         return;
       }
       if (isEditMode) {
@@ -1982,7 +2020,7 @@ ${body}`.trim();
         return;
       const targetTeam = teams.find((t) => t.id === teamId);
       if (!targetTeam) {
-        console.warn("Time não encontrado:", teamId);
+        console.warn("Time nï¿½o encontrado:", teamId);
         return;
       }
       const teamPlayers = players.filter((p) => assignments[p.id] === teamId);
@@ -2141,7 +2179,7 @@ ${body}`.trim();
       try {
         localStorage.setItem("liga1_draft_authenticated", "true");
       } catch (e) {
-        console.warn("Erro ao salvar autenticação:", e);
+        console.warn("Erro ao salvar autenticaï¿½ï¿½o:", e);
       }
 
       setIsAuthenticated(true);
