@@ -2897,6 +2897,10 @@ ${body}`.trim();
       };
       const bootstrap = async () => {
         try {
+          if (teamRoute) {
+            setIsBootstrapped(true);
+            return;
+          }
           await loadSheet();
           await loadOrder();
           await loadDraftState();
@@ -2906,12 +2910,17 @@ ${body}`.trim();
         }
       };
       bootstrap();
-      const intervalId = setInterval(() => {
-        loadSheet();
-        loadOrder();
-      }, 2e3);
+      if (!teamRoute) {
+        const intervalId = setInterval(() => {
+          loadSheet();
+          loadOrder();
+        }, 2e3);
+        return () => {
+          clearInterval(intervalId);
+          controller.abort();
+        };
+      }
       return () => {
-        clearInterval(intervalId);
         controller.abort();
       };
     }, []);
@@ -2950,10 +2959,8 @@ ${body}`.trim();
           }
       };
       fetchRoster();
-      const intervalId = setInterval(fetchRoster, 2e3);
       return () => {
         isActive = false;
-        clearInterval(intervalId);
       };
     }, [teamRoute]);
     const unassignedCaptains = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "CAPTAIN" && !assignments[p.id]), [players, assignments]);
