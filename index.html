@@ -2118,17 +2118,6 @@ ${body}`.trim();
     };
     const togglePlayPause = () => {
       if (isDraftComplete) return;
-
-      if (!isPlaying && !draftPassword) {
-        setShowPasswordModal(true);
-        return;
-      }
-
-      if (!isPlaying && draftPassword) {
-        setShowPasswordModal(true);
-        return;
-      }
-
       setIsPlaying(!isPlaying);
     };
     const handlePasswordSubmit = () => {
@@ -2145,7 +2134,6 @@ ${body}`.trim();
         setDraftPassword(passwordInput);
         setPasswordInput("");
         setShowPasswordModal(false);
-        setSuccessMsg("Senha definida! Carregando draft...");
         return;
       }
 
@@ -2157,7 +2145,6 @@ ${body}`.trim();
 
       setPasswordInput("");
       setShowPasswordModal(false);
-      setSuccessMsg("Senha correta! Carregando draft...");
     };
     const handleImageUpload = (e) => {
       const file = e.target.files[0];
