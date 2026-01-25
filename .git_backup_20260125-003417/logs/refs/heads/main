@@ -1,0 +1,193 @@
+0000000000000000000000000000000000000000 23f4561bb1d77e2c277f88ad86882583505df57d Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768928343 -0300	commit (initial): Initial deploy
+23f4561bb1d77e2c277f88ad86882583505df57d 0afa92fe6c56701f148d07b124178b9f73c892b0 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768928425 -0300	commit: Add Vercel config
+0afa92fe6c56701f148d07b124178b9f73c892b0 7a2bbb2dddda37b6cbae91c5af9d041310740bbc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768928617 -0300	commit: Fix Vercel routing config
+7a2bbb2dddda37b6cbae91c5af9d041310740bbc 339948e23b28cfbdd8ca53f91a717b1efd079069 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768930252 -0300	commit: Use category badge from sheet
+339948e23b28cfbdd8ca53f91a717b1efd079069 e5be5eb2037f9b8107e5a35805d7b916889cbb68 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768930735 -0300	commit: Split category and position badges
+e5be5eb2037f9b8107e5a35805d7b916889cbb68 2e99e8adec7765b9d0e12c9aab13195ef26c5621 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768930793 -0300	commit: Map position to column C
+2e99e8adec7765b9d0e12c9aab13195ef26c5621 ad9093db93a763cfbeb555c003f600c6fe28b2c5 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768931141 -0300	commit: Add position class to badges
+ad9093db93a763cfbeb555c003f600c6fe28b2c5 eaba0a8e0f7df3d5eb32abb8bb3fb5e1bd9f3957 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768931463 -0300	commit: Rename card wrapper class
+eaba0a8e0f7df3d5eb32abb8bb3fb5e1bd9f3957 47bffe319b4081ddcb25d9220d30f38189828773 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768931907 -0300	commit: Use span for position badge
+47bffe319b4081ddcb25d9220d30f38189828773 da582bdf9df1cf0b1acfb4d71344ac96398bde72 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768932200 -0300	commit: Fix position badge className
+da582bdf9df1cf0b1acfb4d71344ac96398bde72 de47caacbb3f3e0e5631b8be43277cae669f492e Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768932666 -0300	commit: Map sheet position values
+de47caacbb3f3e0e5631b8be43277cae669f492e b37f1f6aa17632f65554cae21f1aefbc1851edd7 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768932983 -0300	commit: Use sheet name and refresh players
+b37f1f6aa17632f65554cae21f1aefbc1851edd7 bff128ced170447126b04bb8ef752fa6b928f4fd Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768933165 -0300	commit: Revert to iframe_compartilhamento
+bff128ced170447126b04bb8ef752fa6b928f4fd 11c55f8011fceee0910af88a99ea823e6dc3b5bf Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768933606 -0300	commit: Map type to column D
+11c55f8011fceee0910af88a99ea823e6dc3b5bf df9efbc4b040b0d423dc47f5ab360570fc542e22 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768934185 -0300	commit: Add Apps Script assignment hook
+df9efbc4b040b0d423dc47f5ab360570fc542e22 cef91262420ae8baef8d4e21d718be255f6eb1dc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768934409 -0300	commit: Set Apps Script write URL
+cef91262420ae8baef8d4e21d718be255f6eb1dc ff274419d1403e7ead7785c7d48ec00745c09984 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768934904 -0300	commit: Raise alert z-index
+ff274419d1403e7ead7785c7d48ec00745c09984 67b4c3cf96d6b48040afc32c90e418c41211df2b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768935366 -0300	commit: Make status cards open edit mode
+67b4c3cf96d6b48040afc32c90e418c41211df2b 7249be8b2fadcc8fcb97417c3519f1cf691fbbeb Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768936103 -0300	commit: Open team selection on edit icon
+7249be8b2fadcc8fcb97417c3519f1cf691fbbeb 100b8c7b6e1652cfc2e7dce3a199ca98bb27fd02 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768936961 -0300	commit: Add edit modal for player updates
+100b8c7b6e1652cfc2e7dce3a199ca98bb27fd02 6a72668c05cbdbfecd1b3208eeedb532dc29b433 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768937425 -0300	commit: Point team logos to local assets
+6a72668c05cbdbfecd1b3208eeedb532dc29b433 d01fe037fa96b48576ea7d101ba014d0d33b3af1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768937688 -0300	commit: Force team logos to local assets
+d01fe037fa96b48576ea7d101ba014d0d33b3af1 fe4fb0d8ebc09f2a5d58a820cbcbad0843714fa5 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768937786 -0300	commit: Add team logos in assets
+fe4fb0d8ebc09f2a5d58a820cbcbad0843714fa5 1efae4bf3f6ce9b14076722e4893a47107d3e87a Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768951945 -0300	commit: Hide horizontal overflow
+1efae4bf3f6ce9b14076722e4893a47107d3e87a 55f947c5dc6d2a143339d3e5f1042a5f249b14cf Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768952178 -0300	commit: Hide filter bar horizontal scroll
+55f947c5dc6d2a143339d3e5f1042a5f249b14cf 96128297ea218bb92aece1310d0a50414e27cd2b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768952284 -0300	commit: Hide vertical scrollbar
+96128297ea218bb92aece1310d0a50414e27cd2b 2300b41a99f657ba4c6b498ac884171ed211c9ab Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768952408 -0300	commit: Tighten header layout on smaller screens
+2300b41a99f657ba4c6b498ac884171ed211c9ab 48bce4a79550af38c0470a39a1bed93a8efec5cb Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768952958 -0300	commit: Hide team logos on smaller screens
+48bce4a79550af38c0470a39a1bed93a8efec5cb 69f229e4a40f3deacd0b97f0678b24596a78252f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768953193 -0300	commit: Hide brand block on smallest screens
+69f229e4a40f3deacd0b97f0678b24596a78252f 11d2f49b8610c5022c5b9db966ae49ed703589f2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768953658 -0300	commit: Add 2x zoom on small screens
+11d2f49b8610c5022c5b9db966ae49ed703589f2 c46751added5c05d6a620862c2a141808d1b1d84 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768953863 -0300	commit: Add tablet 1.5x zoom
+c46751added5c05d6a620862c2a141808d1b1d84 40bcb4161e1a25dc1f2a40993afc7fcf7d2cecec Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768954264 -0300	commit: Remove mobile and tablet zoom
+40bcb4161e1a25dc1f2a40993afc7fcf7d2cecec 08917c28bbfd436a9faeb2e1311656658b736fa2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768954783 -0300	commit: Add public team route view
+08917c28bbfd436a9faeb2e1311656658b736fa2 3b01a6fdcff2c51f50b76d36c005208c210f6055 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768954983 -0300	commit: Zoom public team view and remove loading note
+3b01a6fdcff2c51f50b76d36c005208c210f6055 3d22cb232f235d4d6ea2dabf27198c3affb522fe Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768955105 -0300	commit: Use 2 columns for public team roster
+3d22cb232f235d4d6ea2dabf27198c3affb522fe 01eb7f823d243b4797d9e642d5afe9c21dab890f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768963592 -0300	commit: Update team page UI
+01eb7f823d243b4797d9e642d5afe9c21dab890f 11806bafc2fa73509978957b5110839e572b6a04 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768964026 -0300	revert: Revert "Update team page UI"
+11806bafc2fa73509978957b5110839e572b6a04 ec73bca50140d3e921ae1d35dfdbbf40acf32ddb Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768965235 -0300	commit: Update Google Sheets Web App URL
+ec73bca50140d3e921ae1d35dfdbbf40acf32ddb 0abd22528d4d81c14ba3a222acbc7f06805a3646 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768965697 -0300	commit: Filter team page by assigned roster
+0abd22528d4d81c14ba3a222acbc7f06805a3646 6dfb35f3c925e4b825de3253edb111627fe0b8a2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768966035 -0300	commit: Keep team roster on sheet fetch errors
+6dfb35f3c925e4b825de3253edb111627fe0b8a2 b87b635ec32bef21be5987abf7c8fb8fc9927b83 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768966308 -0300	commit: Use Web App for sheet read/write
+b87b635ec32bef21be5987abf7c8fb8fc9927b83 3033caca21cdb8fc4cd02bd9e29ff7f39abdb8f7 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768968187 -0300	commit: Hide sheet load error on team pages
+3033caca21cdb8fc4cd02bd9e29ff7f39abdb8f7 e37c225495782f4100214b9f3eb78a3df4aed1b0 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768991488 -0300	commit: Set page background to avoid white gap
+e37c225495782f4100214b9f3eb78a3df4aed1b0 45712e019ef2e20816c1a46d7b275329542e1b6d Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768992145 -0300	commit: Sort team roster by captain and wildcards
+45712e019ef2e20816c1a46d7b275329542e1b6d bb04b655facac27dd9f66a1891d74d2f8bb0ace6 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768993121 -0300	commit: Match team cards styling and glow
+bb04b655facac27dd9f66a1891d74d2f8bb0ace6 9993909b714e50e7050233281d521106a237a4e9 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768994528 -0300	commit: Reorganize team page roster layout
+9993909b714e50e7050233281d521106a237a4e9 3b1f807acf800befd2a3c01a0d9bbedfe8f15996 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768995606 -0300	commit: Fix team page render syntax
+3b1f807acf800befd2a3c01a0d9bbedfe8f15996 00d4a957cd63884e7a17a7980200a425507b81b9 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768995999 -0300	commit: Right-align team header block
+00d4a957cd63884e7a17a7980200a425507b81b9 099b98866419cb8f6ec91ec0b2183bb60eb80a11 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768996213 -0300	commit: Scale team header block
+099b98866419cb8f6ec91ec0b2183bb60eb80a11 0f05af1b3a66e5be64794077cc42430413279bc1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768996332 -0300	commit: Match team header size to cards
+0f05af1b3a66e5be64794077cc42430413279bc1 37438348dd755695ac45347722f65aaebb974af2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768996503 -0300	commit: Make team header card transparent
+37438348dd755695ac45347722f65aaebb974af2 929589618cd01c8df9fc64632179d841cf58004b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768996779 -0300	commit: Enlarge team header logo and text
+929589618cd01c8df9fc64632179d841cf58004b c552cd70c1fc1bc1200aa69284150e7bb6ff0c02 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768997766 -0300	commit: Add team-themed backdrop to team pages
+c552cd70c1fc1bc1200aa69284150e7bb6ff0c02 6c65441f1f4396d84a30360c28fdc41e6816ed8f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1768999547 -0300	commit: Keep team page background fixed
+6c65441f1f4396d84a30360c28fdc41e6816ed8f 0ed6ca7dd5c79857b41af698a1f7de714ff947de Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769000206 -0300	commit: Fix mobile scroll in team pages
+0ed6ca7dd5c79857b41af698a1f7de714ff947de 655f47726a68694516e0e68e0aab6ae6d54b3034 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769000554 -0300	commit: Fix mobile scroll with scaled content
+655f47726a68694516e0e68e0aab6ae6d54b3034 3e39a9c63b8743c4aab1941dd9d61519aaaa0601 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769000857 -0300	commit: Disable horizontal scroll on team pages
+3e39a9c63b8743c4aab1941dd9d61519aaaa0601 ccbd12b7007176dc828f6dc5c091775b0bc3a939 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769001083 -0300	commit: Center scaled team content
+ccbd12b7007176dc828f6dc5c091775b0bc3a939 163455f8459c9795db1b20bf1de87006f6b4e185 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769004566 -0300	commit: Center scaled roster on mobile
+163455f8459c9795db1b20bf1de87006f6b4e185 51b71a9a5cca01522a4f0903f1153e06d1734c41 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769005247 -0300	commit: Ensure player photos render in export
+51b71a9a5cca01522a4f0903f1153e06d1734c41 e92e3b689b6b58cbb9c5cf724e30c136256120d9 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769006283 -0300	commit: Fix export roster ordering and layout
+e92e3b689b6b58cbb9c5cf724e30c136256120d9 d62c86f352669d6d50161bf7838654307ffe9434 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769007058 -0300	commit: Improve export avatar crop and name sizing
+d62c86f352669d6d50161bf7838654307ffe9434 13770bbdcc10d7aaa34a5926038f101aad4be490 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769007550 -0300	commit: Fix export avatar crop and name scaling
+13770bbdcc10d7aaa34a5926038f101aad4be490 a0dbdd74be63954bfb6ec7ad8834031fcff8dd50 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769007819 -0300	commit: Stabilize player IDs by name
+a0dbdd74be63954bfb6ec7ad8834031fcff8dd50 f5d8bab907278c1fb476d06514d532c12a5c612d Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769008032 -0300	commit: Sync assignments from sheet teams
+f5d8bab907278c1fb476d06514d532c12a5c612d 08618ea8baf21b1555189b4ad68906fde576ab39 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769008486 -0300	commit: Fix roster export name sizing
+08618ea8baf21b1555189b4ad68906fde576ab39 dc6bf484d1268debcd98741f14af1e3711ae2422 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769008924 -0300	commit: Add blurred logo backdrop in export
+dc6bf484d1268debcd98741f14af1e3711ae2422 8c90428e179de4c77bf40863479c8ca9e496b3a3 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769009179 -0300	commit: Fix export logo blur background
+8c90428e179de4c77bf40863479c8ca9e496b3a3 2caf290576d9491e2166565d798cb40e563698b1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769009377 -0300	commit: Boost export logo blur
+2caf290576d9491e2166565d798cb40e563698b1 149d0f9ea37fc8183f971c155f5dc2991bab2a76 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769009580 -0300	commit: Replace roster logo circle with bordered logo
+149d0f9ea37fc8183f971c155f5dc2991bab2a76 3fac0ee8988884fc0f0e5c40a557069225311603 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769012392 -0300	commit: Outline roster logo via canvas
+3fac0ee8988884fc0f0e5c40a557069225311603 8bf94a9a277522bc0cec781246ca4bbde7519b8a Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769014098 -0300	commit: Increase roster logo outline thickness
+8bf94a9a277522bc0cec781246ca4bbde7519b8a a8f5169c8afd2bd1f9927153445375ae7b53947f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769014368 -0300	commit: Update team logo assets
+a8f5169c8afd2bd1f9927153445375ae7b53947f 326a94f79c7a1749463fb8d7ac86de37d3a7d7e3 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769014701 -0300	commit: Increase logo outline thickness to 100
+326a94f79c7a1749463fb8d7ac86de37d3a7d7e3 ea5adea566c5915b87fdecad1313cc8058d74639 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769014928 -0300	commit: Boost roster blur background
+ea5adea566c5915b87fdecad1313cc8058d74639 2bb0c5ac85021500d9eb67192fb33e56d2339037 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769016087 -0300	commit: Render roster blur via canvas
+2bb0c5ac85021500d9eb67192fb33e56d2339037 12d9d9599fd978e0bebb33642ecc08cef9c1f9d4 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769016818 -0300	commit: Increase roster blur logo scale
+12d9d9599fd978e0bebb33642ecc08cef9c1f9d4 7a39a62074689b93c97ef84a00a1d5073df2e73e Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769016987 -0300	commit: Adjust roster blur logo scale
+7a39a62074689b93c97ef84a00a1d5073df2e73e 1aec745737168b1be4c85ce0f866995341b7194c Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769017294 -0300	commit: Revert roster blur logo scale
+1aec745737168b1be4c85ce0f866995341b7194c f3ea537333fb1a268498b3f29b455da17ecdb131 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769017642 -0300	commit: Increase blurred logo source scale
+f3ea537333fb1a268498b3f29b455da17ecdb131 ab1b705272a5b312c539d41d45b688e40576175b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769017828 -0300	commit: Set blurred logo scale to 10
+ab1b705272a5b312c539d41d45b688e40576175b 95e793c85d2bac2858806189d84a29be21655a10 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769018061 -0300	commit: Align blurred roster logo top-left
+95e793c85d2bac2858806189d84a29be21655a10 c956949c7109b29421c14612fae17b953809dea8 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769018311 -0300	commit: Render blurred logo as oversized image
+c956949c7109b29421c14612fae17b953809dea8 15e26370df3f7ae05c2fcbd92ace1b66633a070b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769018569 -0300	commit: Center blurred roster logo
+15e26370df3f7ae05c2fcbd92ace1b66633a070b 32c93f3c723afe2148a337e757d5e38a04f6bdb5 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769018903 -0300	commit: Wait for blurred logo before export
+32c93f3c723afe2148a337e757d5e38a04f6bdb5 e48f6cc5c33628209de05e50c77ac5cde4c84501 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769019655 -0300	commit: Make blurred logo visible in export
+e48f6cc5c33628209de05e50c77ac5cde4c84501 90351e1c923947c6ad9019aa2a4934e181782705 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769019788 -0300	commit: Update compressed team logo assets
+90351e1c923947c6ad9019aa2a4934e181782705 335dac3a7a9027b82921c8daabbc24b760a10e72 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769020692 -0300	commit: Scale blurred logo background
+335dac3a7a9027b82921c8daabbc24b760a10e72 3bcdb1d29900e163bb0ad0dbaeade1a0f2b48246 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769021012 -0300	commit: Stabilize blurred logo placement
+3bcdb1d29900e163bb0ad0dbaeade1a0f2b48246 a66f751f4305f5d8ab6b4660d2a46e5d317acebc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769021480 -0300	commit: Align blurred logo behind main logo
+a66f751f4305f5d8ab6b4660d2a46e5d317acebc 25f1c02f47c146ae430075bb7f0fb63d193e6dc5 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769022180 -0300	commit: Restore blurred logo positioning
+25f1c02f47c146ae430075bb7f0fb63d193e6dc5 dff48ab7b4082956f646040728f25a90d3af8883 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769024777 -0300	commit: Fix blurred logo alignment
+dff48ab7b4082956f646040728f25a90d3af8883 177f3c1a8ea91a8ad145c87e4a9f0d2eb80dbcb7 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769025478 -0300	commit: Refresh sheet data on interval
+177f3c1a8ea91a8ad145c87e4a9f0d2eb80dbcb7 9ab5479deda632d04b061c136497037ee9e68cf3 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769027036 -0300	commit: Improve team name matching from sheet
+9ab5479deda632d04b061c136497037ee9e68cf3 725680ef42a07e40a7850383943a5854b2875c78 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769027411 -0300	commit: Avoid repeated auto-import success popup
+725680ef42a07e40a7850383943a5854b2875c78 fcf0f30b1fecd4bf5abfabaa29d66feb308b84d8 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769028222 -0300	commit: Set pick index from sheet assignments
+fcf0f30b1fecd4bf5abfabaa29d66feb308b84d8 820de649fbbcc73b6c9473d0ab74904d8ef8d4b2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769028403 -0300	commit: Bump local storage version keys
+820de649fbbcc73b6c9473d0ab74904d8ef8d4b2 99f838f8324888b7c7f2ef12603c905ed378c8e0 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769029626 -0300	commit: Persist team order to Sheet2
+99f838f8324888b7c7f2ef12603c905ed378c8e0 30ec7173d0144dc8ff5e5d40a8c3832103254d6e Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769030551 -0300	commit: Persist order on manual reorder
+30ec7173d0144dc8ff5e5d40a8c3832103254d6e 5b9e3cd301bf4099107d5e60abce1d68156cd44f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769030956 -0300	commit: Poll sheet/order every 2 seconds
+5b9e3cd301bf4099107d5e60abce1d68156cd44f 76053bcf1f7b978ccbf83b2758ff4b29b172441b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769032578 -0300	commit: Add soft reset that keeps captains/wildcards
+76053bcf1f7b978ccbf83b2758ff4b29b172441b f0be9a518b0877a05f2161a1c4195c2f3759c5fc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769033218 -0300	commit: Keep reset modal open during auto refresh
+f0be9a518b0877a05f2161a1c4195c2f3759c5fc a937346535088923b2df0f6dbfccf38122c8c891 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769035619 -0300	commit: Update Apps Script URL
+a937346535088923b2df0f6dbfccf38122c8c891 7c7fb3464f9e79fd045d52a33ab0aac3cadae2c1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769036444 -0300	commit: Push assignment before reveal modal closes
+7c7fb3464f9e79fd045d52a33ab0aac3cadae2c1 1d34df2a93937f7180c7118e64f48f3d3b595cf2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769036840 -0300	commit: Delay auto-import right after local pick
+1d34df2a93937f7180c7118e64f48f3d3b595cf2 991a0141e68b4fbff878a5b68c53c32750393b12 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769039004 -0300	commit: Disable reveal modal zoom on player photo
+991a0141e68b4fbff878a5b68c53c32750393b12 ead4da406bcfc22e1a0fd7d7ba4f2c367f5e07c1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769040058 -0300	commit: Show all players on team pages with blocked state
+ead4da406bcfc22e1a0fd7d7ba4f2c367f5e07c1 e34c2aabee81231845c00b113376d8c94f9bcfae Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769041340 -0300	commit: Show team picks with available players on roster pages
+e34c2aabee81231845c00b113376d8c94f9bcfae ae598818326aca64620147dc978462e437c1c823 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769041775 -0300	commit: Apply draft availability rules on team roster pages
+ae598818326aca64620147dc978462e437c1c823 1193e1e562849f92f389353b98c5f809c4a4aa54 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769042262 -0300	commit: Show roster bar only for team picks
+1193e1e562849f92f389353b98c5f809c4a4aa54 549ae3a6a171d21715c91d1d1596b0e5bf445732 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769042693 -0300	commit: Separate available players and sort roster by position
+549ae3a6a171d21715c91d1d1596b0e5bf445732 9c9cf96d7d9fa051cea24bd9572db578630006b1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769043364 -0300	commit: Increase roster typography
+9c9cf96d7d9fa051cea24bd9572db578630006b1 9ed2d96d9ed12b3ddfbf1655864fe0191864cd52 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769043715 -0300	commit: Increase roster card sizes and fix count
+9ed2d96d9ed12b3ddfbf1655864fe0191864cd52 65393f34d3edbbc7b9b8b6f069dd555e51ae56d4 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769044305 -0300	commit: Swap header logo to liga1 asset
+65393f34d3edbbc7b9b8b6f069dd555e51ae56d4 716ecf0e6ce0f0de71cd54197af6020479e2397b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769044749 -0300	commit: Use liga1 asset in header logo
+716ecf0e6ce0f0de71cd54197af6020479e2397b 1b48856f73b595148f3b00bcaef0da9fa2593048 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769044941 -0300	commit: Expand header logo and make box transparent
+1b48856f73b595148f3b00bcaef0da9fa2593048 c8ade1bbd593729b12f29c188414ed77b8c77c8f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769045361 -0300	commit: Set header logo to 12x12 and remove fallback icon
+c8ade1bbd593729b12f29c188414ed77b8c77c8f 8f88afd50d0507ce7f16b4197eb37fe812e00be0 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769045847 -0300	commit: Fix header logo size to 12x12
+8f88afd50d0507ce7f16b4197eb37fe812e00be0 63a49eae79af70c3ba00af81213c37859ceb33e1 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769048186 -0300	commit: Add hexagon overlay for picked cards
+63a49eae79af70c3ba00af81213c37859ceb33e1 11edfd314551dd5643bed6a157ac4aac084988ad Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769048310 -0300	revert: Revert "Add hexagon overlay for picked cards"
+11edfd314551dd5643bed6a157ac4aac084988ad 94c9b9f53b0cd27df5edfbdb92877b8fb29238fc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769048796 -0300	commit: Update picked card overlay to hex blur
+94c9b9f53b0cd27df5edfbdb92877b8fb29238fc 685e0900cb57937d22f9f50cd3ab90bc0ae15e06 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769049192 -0300	commit: Fix picked overlay syntax
+685e0900cb57937d22f9f50cd3ab90bc0ae15e06 9f315a42dd9cf98d9801f6a683417b098c050b99 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769049520 -0300	commit: Simplify picked hex overlay
+9f315a42dd9cf98d9801f6a683417b098c050b99 11edfd314551dd5643bed6a157ac4aac084988ad Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769050078 -0300	reset: moving to 11edfd3
+11edfd314551dd5643bed6a157ac4aac084988ad 65393f34d3edbbc7b9b8b6f069dd555e51ae56d4 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769050736 -0300	reset: moving to 65393f3
+65393f34d3edbbc7b9b8b6f069dd555e51ae56d4 d7a38956aab35cfbcd576d01c020e14dfb3902ea Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769051140 -0300	commit: Reset modes on load
+d7a38956aab35cfbcd576d01c020e14dfb3902ea 716ecf0e6ce0f0de71cd54197af6020479e2397b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769051522 -0300	reset: moving to 716ecf0
+716ecf0e6ce0f0de71cd54197af6020479e2397b 71a1d7d035da6b6f75804bba59e10415bad9e6f6 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769052595 -0300	commit: Increase liga1 logo size and make header icon transparent
+71a1d7d035da6b6f75804bba59e10415bad9e6f6 16e931d12adb11a001b6002d3a3e6c19fd5cd8d3 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769096217 -0300	commit: Remove header logo shadow
+16e931d12adb11a001b6002d3a3e6c19fd5cd8d3 f35e571db2699913806bdb4dd2805534c8e52498 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769096553 -0300	commit: Remove header logo container padding
+f35e571db2699913806bdb4dd2805534c8e52498 e0eaacc5adfd5bf6ff576e7c75544e75b3ee39ac Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769096845 -0300	commit: Extend round modal display to 5s
+e0eaacc5adfd5bf6ff576e7c75544e75b3ee39ac aa60f5f00c5944c2da3172d9bfa8f5471c26fea2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769097568 -0300	commit: Extend round modal display to 6s
+aa60f5f00c5944c2da3172d9bfa8f5471c26fea2 da228908c7811d021b98c88aaf51bb832d0cb12c Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769097925 -0300	commit: Use Liga1 logo in round modal
+da228908c7811d021b98c88aaf51bb832d0cb12c d5b9f60f781c4d89582132a0a5b35af632daa290 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769101334 -0300	commit: Add HUD grid overlay for picked cards
+d5b9f60f781c4d89582132a0a5b35af632daa290 22bee52b5e0929b22137ee69c75604c5f537001f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769103844 -0300	commit: Use team color for taken-card HUD grid
+22bee52b5e0929b22137ee69c75604c5f537001f d8f559e034bab9bcd9edd9a250c901c72be3314d Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769110159 -0300	commit: Disable HTML caching via Vercel headers
+d8f559e034bab9bcd9edd9a250c901c72be3314d c3541b545c66d20b45016b742b1a2efdc7287eb8 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769120069 -0300	commit: Apply multiply blend to HUD grid overlay
+c3541b545c66d20b45016b742b1a2efdc7287eb8 a864e508a739ef7811f5aa3fda391bb308d86354 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769122455 -0300	commit: Refine HUD grid overlay opacity
+a864e508a739ef7811f5aa3fda391bb308d86354 98006eab6e8e107bc5d21118aa84be3cd8b097e2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769123408 -0300	commit: Preserve team grid color when hydrating from localStorage
+98006eab6e8e107bc5d21118aa84be3cd8b097e2 dd6859d2bc74c35aed817d69105cf95dc210eeb4 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769124039 -0300	commit: Add HUD grid overlay to team roster cards
+dd6859d2bc74c35aed817d69105cf95dc210eeb4 57fc2385dceacc4c6fcc4d487018251a1cbe3755 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769126878 -0300	commit: Reuse draft card styling for team roster
+57fc2385dceacc4c6fcc4d487018251a1cbe3755 bc392d1c489d5c83d3395ab8647dd9eaeabfbcd5 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769127529 -0300	commit: Fix roster grid layering and neon glow
+bc392d1c489d5c83d3395ab8647dd9eaeabfbcd5 9d21df53b7c5926abeb09e9f87fad600adeecb7f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769128801 -0300	commit: Force available roster cards to full opacity
+9d21df53b7c5926abeb09e9f87fad600adeecb7f 288dfe1082e9cd0bcc4b323ee2d45ee23b3b4adc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769129157 -0300	revert: Revert "Force available roster cards to full opacity"
+288dfe1082e9cd0bcc4b323ee2d45ee23b3b4adc 7b60d0eeb83ec97b4af669b4449117eae9a24289 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769129902 -0300	commit: Align roster grid rotation and full opacity
+7b60d0eeb83ec97b4af669b4449117eae9a24289 369338f5ce619cf3057e4fc28f1bce645d3a8eba Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769131537 -0300	commit: Raise roster base gradient above photo
+369338f5ce619cf3057e4fc28f1bce645d3a8eba 95000ccbc0608c2c551ef3e300a7a5369a33d26c Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769131854 -0300	commit: Raise roster footer content above base shadow
+95000ccbc0608c2c551ef3e300a7a5369a33d26c 6aa34bc00ed2229354fead9d5bf08378134a83bd Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769133987 -0300	commit: Increase player name size in shared card
+6aa34bc00ed2229354fead9d5bf08378134a83bd d54ec50309a72a4117b0a1bb512e2b9b953d5e25 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769134821 -0300	commit: Fix roster export render syntax
+d54ec50309a72a4117b0a1bb512e2b9b953d5e25 f6cf9c20a25e89bad75a4a627788500c2f2117bc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769135897 -0300	commit: Fix social roster map syntax
+f6cf9c20a25e89bad75a4a627788500c2f2117bc 46abf6eecdc8462c822fe1ac5ea6f42428b05a95 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769136219 -0300	commit: Fix extra parenthesis in roster export
+46abf6eecdc8462c822fe1ac5ea6f42428b05a95 33f249f356028570dd49887fd0632f8bb3173b44 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769136396 -0300	commit: Fix extra parenthesis in social roster render
+33f249f356028570dd49887fd0632f8bb3173b44 720787e44dcdf25756b05ddd7282f8aab3e19a75 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769136945 -0300	commit: Fix missing parentheses in social roster card
+720787e44dcdf25756b05ddd7282f8aab3e19a75 ce4b7d9fb3a4cebdb535e1685b4a7a787c0c083f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769137408 -0300	commit: Fix extra parenthesis in roster export card
+ce4b7d9fb3a4cebdb535e1685b4a7a787c0c083f db3bc865811597d51bce5e4ddb5b6319e7500794 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769137797 -0300	commit: Fix missing closing paren in social roster block
+db3bc865811597d51bce5e4ddb5b6319e7500794 8c792f3f8d7177be4c07ee2ba4484135d2517e72 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769138251 -0300	commit: Restore social roster block to known good version
+8c792f3f8d7177be4c07ee2ba4484135d2517e72 642c7f885f93c5ce6720bac64d01a215170a8dc2 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769138521 -0300	commit: Save manual HTML fixes
+642c7f885f93c5ce6720bac64d01a215170a8dc2 e53b0684f26883378b3e6d7c3049cf47ded6c02b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769138965 -0300	commit: Restore card click handler in draft
+e53b0684f26883378b3e6d7c3049cf47ded6c02b 2f77cc876959d07d95d2f5b651d18e61606397ea Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769139222 -0300	commit: Raise allocation modal above header
+2f77cc876959d07d95d2f5b651d18e61606397ea 15330e2805ee66d0865fb3a2450b7069e26daa32 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769139986 -0300	commit: Remove z-10 from main to allow modal overlay
+15330e2805ee66d0865fb3a2450b7069e26daa32 687fb0c05e130ffedef7fa3e9ce0391aa047f63f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769140358 -0300	commit: Increase player name size in cards
+687fb0c05e130ffedef7fa3e9ce0391aa047f63f 90fe185e2a3dce725f55fa87bbf04d131e5606da Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769141030 -0300	commit: Use existing z-index for allocation modal
+90fe185e2a3dce725f55fa87bbf04d131e5606da 5d5d8fac0f18d5c7c0c819d016dbf3d1b779208a Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769141848 -0300	commit: Move timed-out team to end of queue
+5d5d8fac0f18d5c7c0c819d016dbf3d1b779208a 8872823868de06eb9decabd7d0d87643febab407 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769142955 -0300	commit: Update Apps Script URL
+8872823868de06eb9decabd7d0d87643febab407 79ae71a5eb88dc33abf76c577f95b17e4bd34b45 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769143581 -0300	commit: Update Apps Script webapp URL
+79ae71a5eb88dc33abf76c577f95b17e4bd34b45 215237b8e78c53748ebe122b97cb0d6f6e039c67 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769144007 -0300	commit: Update Apps Script webapp URL
+215237b8e78c53748ebe122b97cb0d6f6e039c67 ad49df1b9e8709e0b80af376f5ff97139049ac2f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769144287 -0300	commit: Remove Sheet2 shuffle sync
+ad49df1b9e8709e0b80af376f5ff97139049ac2f 947faa63fedab40e2c01e8aaddef2b9ffa18d249 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769200259 -0300	commit: Update Apps Script webapp URL
+947faa63fedab40e2c01e8aaddef2b9ffa18d249 58709941e73945f87bc2d1054317f639c74f8c02 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769201004 -0300	commit: Fix soft reset action name
+58709941e73945f87bc2d1054317f639c74f8c02 66570380a73c3478b75e23dff40b6919dafae5e0 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769201667 -0300	commit: Save shuffled order to Sheet2
+66570380a73c3478b75e23dff40b6919dafae5e0 36112db3fa68447afe8ba271d7e5de1fb997c922 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769202970 -0300	commit: Keep draft running after timeout
+36112db3fa68447afe8ba271d7e5de1fb997c922 014b7f849dae1ede8c86a3c099d7ec38cd5cb4d8 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769204184 -0300	commit: Require manual play start after pre-draft
+014b7f849dae1ede8c86a3c099d7ec38cd5cb4d8 aab07cd3ee845183e30f45c7bd91fe7477f6866c Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769204749 -0300	commit: Avoid header team flicker on timeout
+aab07cd3ee845183e30f45c7bd91fe7477f6866c 956c241d3f2dfba26179bab85f82944aa455c877 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769205370 -0300	commit: Hold override team until draft order sync
+956c241d3f2dfba26179bab85f82944aa455c877 2498c6427d4a42ed0a02895427f55014fa6083de Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769207907 -0300	commit: Fix snake order to respect Sheet2-only ordering
+2498c6427d4a42ed0a02895427f55014fa6083de 48d6f1587f95a8c7162a489b43789f48fb70b72c Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769209433 -0300	commit: Prevent auto import from resetting pick index
+48d6f1587f95a8c7162a489b43789f48fb70b72c b80abc1ca8ddaab5aba03a8ad3df165dffa05f6f Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769210283 -0300	commit: Add round queue for timeouts within round
+b80abc1ca8ddaab5aba03a8ad3df165dffa05f6f b92215a584590dedbbea33740d685b90c097df57 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769210949 -0300	commit: Fix round queue rotation on timeout
+b92215a584590dedbbea33740d685b90c097df57 85d142e9b8ac95c230b782efa6f76c22a5e860ae Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769211487 -0300	commit: Reset round queue after shuffle
+85d142e9b8ac95c230b782efa6f76c22a5e860ae d80b9d5fde0b897d97eaa984e884d1db9b342596 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769211775 -0300	commit: Align header to shuffled order before draft starts
+d80b9d5fde0b897d97eaa984e884d1db9b342596 1e343aa8e84913249ddf866e7a2a90e45ef59cbd Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769213043 -0300	commit: Update Apps Script URL
+1e343aa8e84913249ddf866e7a2a90e45ef59cbd 2a78e52243751f3b19bf74f1086439fc92c21f4b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769213450 -0300	commit: Add draft session lock with Sheet2
+2a78e52243751f3b19bf74f1086439fc92c21f4b a236a8adc9fc43b4b2688c99cc770b21436f0a74 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769213723 -0300	commit: Fix async session check in card click
+a236a8adc9fc43b4b2688c99cc770b21436f0a74 c0774325327fcf6e69f4c9fe63bccfbf85f0e770 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769214215 -0300	commit: Update Apps Script URL for session cells
+c0774325327fcf6e69f4c9fe63bccfbf85f0e770 06727d3030b6416830534a288eb8b05f834e1a23 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769214784 -0300	commit: Read lock token directly from Apps Script
+06727d3030b6416830534a288eb8b05f834e1a23 6407151d1186fee89a17193d82a730c9c7e1606a Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769215395 -0300	commit: Update Apps Script URL for session fix
+6407151d1186fee89a17193d82a730c9c7e1606a 60a556d99e52646677d611b528f2ee2315a1dde8 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769215715 -0300	commit: Use gviz to read session and avoid CORS
+60a556d99e52646677d611b528f2ee2315a1dde8 98a41df39339505c921b0bd584a03692d8fc1ab9 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769216110 -0300	commit: Retry session lock read with cache buster
+98a41df39339505c921b0bd584a03692d8fc1ab9 563f90c43b07cd81c3d445e3659a6c725ee11a45 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769217172 -0300	commit: Allow start when session token exists
+563f90c43b07cd81c3d445e3659a6c725ee11a45 e78eb2bc6b2f127cda6c46fc89c372725d7e7cdc Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769217891 -0300	commit: Use read_session API to start lock
+e78eb2bc6b2f127cda6c46fc89c372725d7e7cdc c90f0fd26e23292a3e5acd06b6335dbf7e295885 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769219006 -0300	commit: Cache draft session token and refresh per round
+c90f0fd26e23292a3e5acd06b6335dbf7e295885 24f15934cb32f686a618e52032742b0ae8337643 Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769220442 -0300	commit: Persist draft state to Sheet2
+24f15934cb32f686a618e52032742b0ae8337643 eb776816b41724b4779ae8a2cc417b6fe5a9307b Leonardo Henriques Pinto <teko.lhp@gmail.com> 1769224946 -0300	commit: Update Apps Script URL for draft state
