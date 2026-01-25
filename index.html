@@ -152,7 +152,7 @@
             ::selection {
                 @apply bg-primary/20 text-foreground;
             }
-        html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } </style>
+        html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } </style>
 
         <!-- Styles -->
         <style>
@@ -199,7 +199,7 @@
                 --input: 217.2 32.6% 17.5%;
                 --ring: 212.7 26.8% 83.9%;
             }
-        html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } </style>
+        html, body { scrollbar-width: none; -ms-overflow-style: none; background-color: #0f172a; } body::-webkit-scrollbar { width: 0; height: 0; } </style>
         <script src="https://cdn.tailwindcss.com/"></script>
         <script>
             tailwind.config = {
@@ -902,12 +902,47 @@
     }
   ];
   var DEFAULT_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-  var SHEET_CSV_URL = "https://script.google.com/macros/s/AKfycbx7QBWxfYqzOx-5MNxOya8clQDwH5DYL2wA5Nm1G-FlUp_W46Fy6zsHrE1emax5sxhI/exec?action=read_csv";
-  var SHEET_WRITE_URL = "https://script.google.com/macros/s/AKfycbzp9vxOVvbuk7UGmpMpp5ID_vHRhkdAA2wfEMxsh6atXxIgs1257TMPMcE8mbwT499D/exec";
-  var SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGO-Bi198_bYNK62KxPXm595Vo8D3s7dF5JF4Q6UvlFs1nIpmndY45P7LEQKwFazofU1UucWJE1G6v/gviz/tq?tqx=out:json";
+
+  // Configuration object - Centralized configuration for easy maintenance
+  var CONFIG = {
+    // Google Sheets URLs
+    SHEET_CSV_URL: "https://script.google.com/macros/s/AKfycbx7QBWxfYqzOx-5MNxOya8clQDwH5DYL2wA5Nm1G-FlUp_W46Fy6zsHrE1emax5sxhI/exec?action=read_csv",
+    SHEET_WRITE_URL: "https://script.google.com/macros/s/AKfycbzp9vxOVvbuk7UGmpMpp5ID_vHRhkdAA2wfEMxsh6atXxIgs1257TMPMcE8mbwT499D/exec",
+    SHEET_GVIZ_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGO-Bi198_bYNK62KxPXm595Vo8D3s7dF5JF4Q6UvlFs1nIpmndY45P7LEQKwFazofU1UucWJE1G6v/gviz/tq?tqx=out:json",
+
+    // Timing constants
+    TURN_DURATION: 60,
+    POLL_INTERVAL: 2000,
+    TOAST_DURATION: 4000,
+    TOAST_DURATION_LONG: 10000,
+    TIMER_INTERVAL: 1000,
+    SHUFFLE_DURATION: 100,
+    SHUFFLE_COUNT: 20,
+    IMAGE_LOAD_TIMEOUT: 2000,
+    THROTTLE_DURATION: 3000,
+
+    // Image sizing
+    MAX_IMAGE_WIDTH: 300,
+    MAX_IMAGE_HEIGHT: 400,
+    MAX_IMAGE_SIZE: 256,
+
+    // Sound URLs
+    SOUNDS: {
+      pick: "https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3",
+      tick: "https://assets.mixkit.co/active_storage/sfx/204/204-preview.mp3",
+      start: "https://assets.mixkit.co/active_storage/sfx/2544/2544-preview.mp3",
+      alert: "https://assets.mixkit.co/active_storage/sfx/2572/2572-preview.mp3"
+    }
+  };
+
+  // Legacy variable names for backwards compatibility
+  var SHEET_CSV_URL = CONFIG.SHEET_CSV_URL;
+  var SHEET_WRITE_URL = CONFIG.SHEET_WRITE_URL;
+  var SHEET_GVIZ_URL = CONFIG.SHEET_GVIZ_URL;
   var GAME_POSITIONS = ["PIV\xD4", "ALA DIR", "ALA ESQ", "MEI ARM", "MEI DEF", "FIXO", "GOL"];
   var FILTER_POSITIONS = ["TODOS", "DISPON\xCDVEIS", "CAPS", "WC", ...GAME_POSITIONS];
-  var TURN_DURATION = 60;
+  var TURN_DURATION = CONFIG.TURN_DURATION;
+  var SOUNDS_URLS = CONFIG.SOUNDS;
   var DEFAULT_PLAYERS = (() => {
     const players = [];
     let idCounter = 1;
@@ -1043,6 +1078,7 @@
         body: JSON.stringify({ action: "save_state", pickIndex, queue: queueIds })
       });
     } catch (err) {
+      console.warn("Erro ao salvar estado do draft:", err);
     }
   };
   var refreshDraftSession = async () => {
@@ -1051,6 +1087,7 @@
       try {
         localStorage.setItem("liga1_draft_session_token", session.token);
       } catch (e) {
+        console.warn("Erro ao salvar token no localStorage:", e);
       }
       setSessionToken(session.token);
     }
@@ -1062,6 +1099,7 @@
       try {
         return localStorage.getItem("liga1_draft_session_token") || "";
       } catch (e) {
+        console.warn("Erro ao ler token do localStorage:", e);
         return "";
       }
     })();
@@ -1081,6 +1119,7 @@
         body: JSON.stringify({ action: "lock_session" })
       });
     } catch (err) {
+      console.warn("Erro ao fazer lock da sessão:", err);
     }
   };
   var unlockDraftSession = async () => {
@@ -1093,6 +1132,7 @@
       });
       return true;
     } catch (err) {
+      console.warn("Erro ao fazer unlock da sessão:", err);
       return false;
     }
   };
@@ -1105,6 +1145,7 @@
         body: JSON.stringify({ action: "save_order", sheet: "Sheet2", order: orderNames })
       });
     } catch (err) {
+      console.warn("Erro ao salvar ordem dos times:", err);
     }
   };
   var normalizePlayerKey = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -1191,6 +1232,13 @@
     if (type === "WILDCARD")
       return "border-purple-500/50 ring-1 ring-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.2)]";
     return "border-white/5";
+  };
+  var getPlayerBadge = (type) => {
+    if (type === "CAPTAIN")
+      return "[CAPITÃO] ";
+    if (type === "WILDCARD")
+      return "[WILDCARD] ";
+    return "";
   };
   var createOutlinedPng = (src, options = {}) => new Promise((resolve, reject) => {
     const img = new Image();
@@ -1355,6 +1403,7 @@
         const saved = localStorage.getItem("liga1_draft_v46_pickIndex");
         return saved ? JSON.parse(saved) : 0;
       } catch (e) {
+        console.warn("Erro ao carregar pickIndex do localStorage:", e);
         return 0;
       }
     });
@@ -1363,6 +1412,7 @@
         const saved = localStorage.getItem("liga1_draft_v46_pickHistory");
         return saved ? JSON.parse(saved) : [];
       } catch (e) {
+        console.warn("Erro ao carregar pickHistory do localStorage:", e);
         return [];
       }
     });
@@ -1416,14 +1466,16 @@
       createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 100 }).then((dataUrl) => {
         if (isActive)
           setSocialLogoOutlined(dataUrl);
-      }).catch(() => {
+      }).catch((err) => {
+        console.warn("Erro ao criar logo outlined:", err);
         if (isActive)
           setSocialLogoOutlined("");
       });
       createBlurredPng(socialTeam.logo, { blur: 120, opacity: 1, scale: 4, align: "top-left" }).then((dataUrl) => {
         if (isActive)
           setSocialLogoBlurred(dataUrl);
-      }).catch(() => {
+      }).catch((err) => {
+        console.warn("Erro ao criar logo blurred:", err);
         if (isActive)
           setSocialLogoBlurred("");
       });
@@ -1506,6 +1558,7 @@ ${body}`.trim();
               handleSimpleImport(text, true);
           } catch (err) {
             if (err?.name !== "AbortError") {
+              console.warn("Erro ao carregar planilha via CSV:", err);
               setWarningMsg("Falha ao carregar a planilha do Google.");
             }
           }
@@ -1521,7 +1574,7 @@ ${body}`.trim();
           return;
         const state = await readDraftStateFromSheet();
         const pickIndex = Number(state.pickIndex);
-        if (!Number.isNaN(pickIndex) && pickIndex > 0) {
+        if (!Number.isNaN(pickIndex) && pickIndex >= 0 && pickIndex < 1000) {
           setCurrentPickIndex(pickIndex);
         }
         if (state.queue) {
@@ -1529,6 +1582,7 @@ ${body}`.trim();
           try {
             queueIds = Array.isArray(state.queue) ? state.queue : JSON.parse(state.queue);
           } catch (e) {
+            console.warn("Erro ao parsear queue, usando fallback:", e);
             queueIds = state.queue.toString().split(",").map((v) => v.trim()).filter(Boolean);
           }
           if (queueIds.length)
@@ -1555,7 +1609,7 @@ ${body}`.trim();
         const intervalId = setInterval(() => {
           loadSheet();
           loadOrder();
-        }, 2e3);
+        }, CONFIG.POLL_INTERVAL);
         return () => {
           clearInterval(intervalId);
           controller.abort();
@@ -1638,9 +1692,11 @@ ${body}`.trim();
       try {
         const audio = new Audio(SOUNDS_URLS[type]);
         audio.volume = type === "tick" ? 0.3 : 0.6;
-        audio.play().catch(() => {
+        audio.play().catch((err) => {
+          console.warn("Erro ao tocar áudio:", err);
         });
       } catch (e) {
+        console.warn("Erro ao criar áudio:", e);
       }
     };
       const sendAssignmentToSheet = async (playerName, teamName) => {
@@ -1654,6 +1710,7 @@ ${body}`.trim();
             body: JSON.stringify({ name: playerName, team: teamName })
           });
         } catch (e) {
+          console.warn("Erro ao enviar assignment para planilha:", e);
         }
       };
       const clearSheetAssignments = async () => {
@@ -1667,6 +1724,7 @@ ${body}`.trim();
             body: JSON.stringify({ action: "clear_assignments", sheet: "Sheet1", column: "F" })
           });
         } catch (e) {
+          console.warn("Erro ao limpar assignments da planilha:", e);
         }
       };
     const clearRegularAssignments = async () => {
@@ -1680,6 +1738,7 @@ ${body}`.trim();
             body: JSON.stringify({ action: "clear_assignments_soft", sheet: "Sheet1", column: "F" })
           });
         } catch (e) {
+          console.warn("Erro ao limpar assignments soft da planilha:", e);
         }
       };
     const handleExportSocial = (team) => {
@@ -1687,7 +1746,7 @@ ${body}`.trim();
       setTimeout(async () => {
         if (socialRef.current && window.html2canvas) {
           const start = Date.now();
-          while (Date.now() - start < 2e3) {
+          while (Date.now() - start < CONFIG.IMAGE_LOAD_TIMEOUT) {
             if (socialLogoOutlinedRef.current && socialLogoBlurredRef.current)
               break;
             await new Promise((resolve) => setTimeout(resolve, 50));
@@ -1823,7 +1882,7 @@ ${body}`.trim();
     }, [isDraftComplete, currentPickIndex, teams, players, assignments, revealData]);
     (0, import_react3.useEffect)(() => {
       if (roundMsg) {
-        const t = setTimeout(() => setRoundMsg(null), 10e3);
+        const t = setTimeout(() => setRoundMsg(null), CONFIG.TOAST_DURATION_LONG);
         return () => clearTimeout(t);
       }
     }, [roundMsg]);
@@ -1842,7 +1901,7 @@ ${body}`.trim();
           }
           return prev - 1;
         });
-      }, 1e3);
+      }, CONFIG.TIMER_INTERVAL);
       return () => clearInterval(timer);
     }, [isPlaying, isDraftComplete, isEditMode, showSettings, showStats, isAllocationMode, isMuted, draftOrder, currentPickIndex, revealData, isShuffling]);
     (0, import_react3.useEffect)(() => {
@@ -1850,7 +1909,7 @@ ${body}`.trim();
     }, [currentPickIndex]);
     (0, import_react3.useEffect)(() => {
       if (warningMsg) {
-        const t = setTimeout(() => setWarningMsg(null), 4e3);
+        const t = setTimeout(() => setWarningMsg(null), CONFIG.TOAST_DURATION);
         return () => clearTimeout(t);
       }
     }, [warningMsg]);
@@ -1867,7 +1926,7 @@ ${body}`.trim();
     }, [overrideTeamId, roundQueueIds]);
     (0, import_react3.useEffect)(() => {
       if (successMsg) {
-        const t = setTimeout(() => setSuccessMsg(null), 4e3);
+        const t = setTimeout(() => setSuccessMsg(null), CONFIG.TOAST_DURATION);
         return () => clearTimeout(t);
       }
     }, [successMsg]);
@@ -1903,6 +1962,10 @@ ${body}`.trim();
       setIsPlaying(false);
     };
     const handleCardClick = async (player) => {
+      if (!player || !player.id) {
+        console.warn("handleCardClick chamado com player inválido");
+        return;
+      }
       if (isEditMode) {
         setEditingPlayer(player);
         setPreviewAvatar(player.avatar);
@@ -1978,6 +2041,10 @@ ${body}`.trim();
       if (!allocatingPlayer)
         return;
       const targetTeam = teams.find((t) => t.id === teamId);
+      if (!targetTeam) {
+        console.warn("Time não encontrado:", teamId);
+        return;
+      }
       const teamPlayers = players.filter((p) => assignments[p.id] === teamId);
       const captainsInTeam = teamPlayers.filter((p) => p.type === "CAPTAIN").length;
       const wildcardsInTeam = teamPlayers.filter((p) => p.type === "WILDCARD").length;
@@ -2065,7 +2132,6 @@ ${body}`.trim();
       }
       setIsShuffling(true);
       let shuffleCount = 0;
-      const maxShuffles = 20;
       const intervalId = setInterval(() => {
         setTeams((prev) => {
           const shuffled = [...prev];
@@ -2077,7 +2143,7 @@ ${body}`.trim();
         });
         playSound("tick");
         shuffleCount++;
-        if (shuffleCount >= maxShuffles) {
+        if (shuffleCount >= CONFIG.SHUFFLE_COUNT) {
           clearInterval(intervalId);
           setIsShuffling(false);
           orderPersistRef.current = true;
@@ -2090,7 +2156,7 @@ ${body}`.trim();
           setSuccessMsg("Ordem definida aleatoriamente!");
           playSound("start");
         }
-      }, 100);
+      }, CONFIG.SHUFFLE_DURATION);
     };
     const handleRemovePlayer = (playerId) => {
       setConfirmModal({
@@ -2130,18 +2196,17 @@ ${body}`.trim();
           img.onload = () => {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            const MAX_WIDTH = 300;
             let width = img.width;
             let height = img.height;
             if (width > height) {
-              if (width > MAX_WIDTH) {
-                height *= MAX_WIDTH / width;
-                width = MAX_WIDTH;
+              if (width > CONFIG.MAX_IMAGE_WIDTH) {
+                height *= CONFIG.MAX_IMAGE_WIDTH / width;
+                width = CONFIG.MAX_IMAGE_WIDTH;
               }
             } else {
-              if (height > 400) {
-                width *= 400 / height;
-                height = 400;
+              if (height > CONFIG.MAX_IMAGE_HEIGHT) {
+                width *= CONFIG.MAX_IMAGE_HEIGHT / height;
+                height = CONFIG.MAX_IMAGE_HEIGHT;
               }
             }
             canvas.width = width;
@@ -2163,18 +2228,17 @@ ${body}`.trim();
           img.onload = () => {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            const MAX_SIZE = 256;
             let width = img.width;
             let height = img.height;
             if (width > height) {
-              if (width > MAX_SIZE) {
-                height *= MAX_SIZE / width;
-                width = MAX_SIZE;
+              if (width > CONFIG.MAX_IMAGE_SIZE) {
+                height *= CONFIG.MAX_IMAGE_SIZE / width;
+                width = CONFIG.MAX_IMAGE_SIZE;
               }
             } else {
-              if (height > MAX_SIZE) {
-                width *= MAX_SIZE / height;
-                height = MAX_SIZE;
+              if (height > CONFIG.MAX_IMAGE_SIZE) {
+                width *= CONFIG.MAX_IMAGE_SIZE / height;
+                height = CONFIG.MAX_IMAGE_SIZE;
               }
             }
             canvas.width = width;
@@ -2246,7 +2310,7 @@ ${body}`.trim();
         });
       };
     const handleSimpleImport = (rawData, isAuto = false) => {
-      if (isAuto && Date.now() - lastLocalPickRef.current < 3e3) {
+      if (isAuto && Date.now() - lastLocalPickRef.current < CONFIG.THROTTLE_DURATION) {
         return;
       }
       if (!rawData || !rawData.trim()) {
@@ -2440,7 +2504,7 @@ ${body}`.trim();
       });
       navigator.clipboard.writeText(text).then(() => {
         setCopySuccess(true);
-        setTimeout(() => setCopySuccess(false), 2e3);
+        setTimeout(() => setCopySuccess(false), CONFIG.POLL_INTERVAL);
       });
     };
     const handleDownloadRosters = () => {
@@ -2461,11 +2525,7 @@ ${body}`.trim();
             return a.name.localeCompare(b.name);
           });
           sortedPlayers.forEach((p) => {
-            let badge = "";
-            if (p.type === "CAPTAIN")
-              badge = "[CAPIT\xC3O] ";
-            if (p.type === "WILDCARD")
-              badge = "[WILDCARD] ";
+            const badge = getPlayerBadge(p.type);
             text += `- ${badge}${p.name} (${p.position}) - Rating: ${p.rating}
 `;
           });
@@ -2563,6 +2623,7 @@ ${body}`.trim();
     };
     const filteredPlayers = (0, import_react3.useMemo)(() => {
       return players.filter((player) => {
+        if (!player || !player.name) return false;
         const matchesSearch = player.name.toLowerCase().includes(searchTerm.toLowerCase());
         const isTaken = !!assignments[player.id];
         const matchesPos = filterPos === "TODOS" ? true : filterPos === "DISPON\xCDVEIS" ? !isTaken : filterPos === "CAPS" ? player.type === "CAPTAIN" : filterPos === "WC" ? player.type === "WILDCARD" : player.position === filterPos;
