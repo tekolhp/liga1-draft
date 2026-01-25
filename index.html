@@ -1049,15 +1049,6 @@
     };
     document.body.appendChild(script);
   });
-  var readDraftSession = async () => {
-    try {
-      const response = await fetch(`${SHEET_WRITE_URL}?action=read_session&cb=${Date.now()}`, { cache: "no-store" });
-      const data = await response.json();
-      return data?.session || { status: "OPEN", token: "", startedAt: "" };
-    } catch (err) {
-      return { status: "OPEN", token: "", startedAt: "" };
-    }
-  };
   var readDraftStateFromSheet = async () => {
     try {
       const response = await fetch(`${SHEET_WRITE_URL}?action=read_state&cb=${Date.now()}`, { cache: "no-store" });
@@ -1079,61 +1070,6 @@
       });
     } catch (err) {
       console.warn("Erro ao salvar estado do draft:", err);
-    }
-  };
-  var refreshDraftSession = async () => {
-    const session = await readDraftSession();
-    if (session?.token) {
-      try {
-        localStorage.setItem("liga1_draft_session_token", session.token);
-      } catch (e) {
-        console.warn("Erro ao salvar token no localStorage:", e);
-      }
-      setSessionToken(session.token);
-    }
-    return session;
-  };
-  var checkSessionLock = async () => {
-    const session = await readDraftSession();
-    const localToken = (() => {
-      try {
-        return localStorage.getItem("liga1_draft_session_token") || "";
-      } catch (e) {
-        console.warn("Erro ao ler token do localStorage:", e);
-        return "";
-      }
-    })();
-    if (session.status === "LOCKED" && session.token && session.token !== localToken) {
-      setIsSessionLockedOut(true);
-    } else {
-      setIsSessionLockedOut(false);
-    }
-    return session;
-  };
-  var lockDraftSession = async () => {
-    try {
-      await fetch(SHEET_WRITE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "lock_session" })
-      });
-    } catch (err) {
-      console.warn("Erro ao fazer lock da sessão:", err);
-    }
-  };
-  var unlockDraftSession = async () => {
-    try {
-      await fetch(SHEET_WRITE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "unlock_session" })
-      });
-      return true;
-    } catch (err) {
-      console.warn("Erro ao fazer unlock da sessão:", err);
-      return false;
     }
   };
   var saveTeamOrderToSheet = async (orderNames) => {
@@ -1385,14 +1321,6 @@
     const [isPlaying, setIsPlaying] = (0, import_react3.useState)(false);
     const [hasStarted, setHasStarted] = (0, import_react3.useState)(false);
     const [overrideTeamId, setOverrideTeamId] = (0, import_react3.useState)(null);
-    const [sessionToken, setSessionToken] = (0, import_react3.useState)(() => {
-      try {
-        return localStorage.getItem("liga1_draft_session_token") || "";
-      } catch (e) {
-        return "";
-      }
-    });
-    const [isSessionLockedOut, setIsSessionLockedOut] = (0, import_react3.useState)(false);
     const [draftPassword, setDraftPassword] = (0, import_react3.useState)(() => {
       try {
         return localStorage.getItem("liga1_draft_password") || "";
@@ -1400,7 +1328,14 @@
         return "";
       }
     });
-    const [showPasswordModal, setShowPasswordModal] = (0, import_react3.useState)(false);
+    const [showPasswordModal, setShowPasswordModal] = (0, import_react3.useState)(() => {
+      try {
+        const password = localStorage.getItem("liga1_draft_password") || "";
+        return !password;
+      } catch (e) {
+        return true;
+      }
+    });
     const [passwordInput, setPasswordInput] = (0, import_react3.useState)("");
     const [roundQueueIds, setRoundQueueIds] = (0, import_react3.useState)([]);
     const [isBootstrapped, setIsBootstrapped] = (0, import_react3.useState)(false);
@@ -1605,16 +1540,18 @@ ${body}`.trim();
             setIsBootstrapped(true);
             return;
           }
-          await loadSheet();
-          await loadOrder();
-          await loadDraftState();
-          await checkSessionLock();
+          if (showPasswordModal) {
+            return;
+          }
+          await Promise.all([loadSheet(), loadOrder(), loadDraftState()]);
         } finally {
-          setIsBootstrapped(true);
+          if (!showPasswordModal) {
+            setIsBootstrapped(true);
+          }
         }
       };
       bootstrap();
-      if (!teamRoute) {
+      if (!teamRoute && !showPasswordModal) {
         const intervalId = setInterval(() => {
           loadSheet();
           loadOrder();
@@ -1627,7 +1564,7 @@ ${body}`.trim();
       return () => {
         controller.abort();
       };
-    }, []);
+    }, [showPasswordModal]);
     (0, import_react3.useEffect)(() => {
       if (!teamRoute)
         return;
@@ -1860,9 +1797,6 @@ ${body}`.trim();
           const finishedRound = currentPickIndex / numTeams;
           setRoundMsg(`FIM DA RODADA ${finishedRound}`);
           playSound("start");
-          if (hasStarted) {
-            refreshDraftSession();
-          }
         }
       }
       prevPickIndex.current = currentPickIndex;
@@ -1997,16 +1931,6 @@ ${body}`.trim();
       }
       if (assignments[player.id] || isDraftComplete)
         return;
-      let localToken = sessionToken || "";
-      if (!localToken) {
-        const session = await refreshDraftSession();
-        localToken = session.token || "";
-        if (session.status === "LOCKED" && !localToken) {
-          setWarningMsg("Draft trancado em outra sess\u00e3o.");
-          playSound("alert");
-          return;
-        }
-      }
       if (player.position === "GOL" && currentTeamHasGoalie) {
         setWarningMsg(`REGRA VIOLADA: O ${currentTeam.name} j\xE1 possui 1 Goleiro!`);
         playSound("alert");
@@ -2221,8 +2145,7 @@ ${body}`.trim();
         setDraftPassword(passwordInput);
         setPasswordInput("");
         setShowPasswordModal(false);
-        setIsPlaying(true);
-        setSuccessMsg("Senha definida! Você está no controle do draft.");
+        setSuccessMsg("Senha definida! Carregando draft...");
         return;
       }
 
@@ -2234,8 +2157,7 @@ ${body}`.trim();
 
       setPasswordInput("");
       setShowPasswordModal(false);
-      setIsPlaying(true);
-      setSuccessMsg("Senha correta! Você pode continuar o draft.");
+      setSuccessMsg("Senha correta! Carregando draft...");
     };
     const handleImageUpload = (e) => {
       const file = e.target.files[0];
@@ -2777,7 +2699,7 @@ ${body}`.trim();
         }, className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-slate-900 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20" }, /* @__PURE__ */ import_react3.default.createElement(PenLine, { size: 20 })), inAllocationMode && !isTaken && !isRegularInAllocation && /* @__PURE__ */ import_react3.default.createElement("div", { className: "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-500 text-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-20" }, /* @__PURE__ */ import_react3.default.createElement(UserPlus, { size: 20 })))
       );
     };
-    if (!isBootstrapped) {
+    if (!isBootstrapped && !showPasswordModal) {
       return /* @__PURE__ */ import_react3.default.createElement("div", { className: "min-h-screen bg-slate-900 text-slate-100 font-sans flex items-center justify-center" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex flex-col items-center gap-4" }, /* @__PURE__ */ import_react3.default.createElement("div", { className: "w-12 h-12 rounded-full border-4 border-orange-500/40 border-t-orange-500 animate-spin" }), /* @__PURE__ */ import_react3.default.createElement("p", { className: "text-sm font-bold uppercase tracking-widest text-slate-400" }, "Carregando dados da planilha...")));
     }
     if (teamRoute) {
@@ -2851,28 +2773,12 @@ ${body}`.trim();
       "button",
       {
         disabled: !isReadyToStart,
-        onClick: async () => {
-          await lockDraftSession();
-          let session = await readDraftSession();
-          let tries = 0;
-          while (!session.token && tries < 6) {
-            await new Promise((resolve) => setTimeout(resolve, 250));
-            session = await readDraftSession();
-            tries++;
-          }
-          const finalToken = session.token || "";
-          if (!finalToken) {
-            setWarningMsg("N\u00e3o foi poss\u00edvel trancar a sess\u00e3o.");
-            playSound("alert");
-            return;
-          }
-          localStorage.setItem("liga1_draft_session_token", finalToken);
-          setSessionToken(finalToken);
+        onClick: () => {
           setHasStarted(true);
           playSound("start");
         },
         className: `group relative px-12 py-6 font-black text-3xl rounded-3xl shadow-2xl transition-all flex items-center gap-4 mx-auto
-                            ${isReadyToStart ? "bg-orange-600 hover:bg-orange-500 text-white shadow-orange-500/40 hover:scale-105 cursor-pointer" : "bg-slate-800 text-slate-600 cursor-not-allowed opacity-50 grayscale"}
+                            ${isReadyToStart ? "bg-orange-600 hover:bg-orange-500 text-white shadow-orange-500/40 hover:scale-105 cursor-pointer" : "bg-slate-700/50 text-slate-400 cursor-not-allowed border-2 border-dashed border-slate-600"}
                         `
       },
       /* @__PURE__ */ import_react3.default.createElement(Play, { size: 40, fill: "currentColor" }),
