@@ -1705,9 +1705,12 @@ ${body}`.trim();
         setActiveControllerId(controllerId);
         setIsController(controllerId === sessionId);
       };
-      checkControl();
+      const initialTimeout = setTimeout(checkControl, 1000);
       const intervalId = setInterval(checkControl, CONFIG.POLL_INTERVAL);
-      return () => clearInterval(intervalId);
+      return () => {
+        clearTimeout(initialTimeout);
+        clearInterval(intervalId);
+      };
     }, [teamRoute, isAuthenticated, sessionId]);
     const unassignedCaptains = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "CAPTAIN" && !assignments[p.id]), [players, assignments]);
     const unassignedWildcards = (0, import_react3.useMemo)(() => players.filter((p) => p.type === "WILDCARD" && !assignments[p.id]), [players, assignments]);
@@ -2248,7 +2251,7 @@ ${body}`.trim();
         console.warn("Erro ao salvar autenticação:", e);
       }
 
-      await setActiveControllerId(sessionId);
+      await setActiveController(sessionId);
       setActiveControllerId(sessionId);
       setIsController(true);
       setIsAuthenticated(true);
