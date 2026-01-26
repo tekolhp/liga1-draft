@@ -2776,7 +2776,10 @@ ${body}`.trim();
     const availableSorted = sortByPosition(available);
     const renderTeamCard = (player, keySuffix, context = "roster") => {
       const assignedTeamId = assignments[player.id];
-      const assignedTeam = teams.find((t) => t.id === assignedTeamId);
+      let assignedTeam = teams.find((t) => t.id === assignedTeamId);
+      if (context === "roster" && !assignedTeam && player.team) {
+        assignedTeam = teams.find((t) => t.name === player.team);
+      }
       const isTaken = !!assignedTeam;
       const isDraft = context === "draft";
       const inEditMode = isDraft ? isEditMode : false;
