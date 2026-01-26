@@ -1731,6 +1731,17 @@ ${body}`.trim();
       preloadLogos();
     }, []);
     (0, import_react3.useEffect)(() => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then((registration) => {
+            console.log('[App] Service Worker registered:', registration);
+          })
+          .catch((error) => {
+            console.error('[App] Service Worker registration failed:', error);
+          });
+      }
+    }, []);
+    (0, import_react3.useEffect)(() => {
       if (teamRoute || !isAuthenticated) return;
       const checkControl = async () => {
         const controllerId = await getActiveController();
