@@ -91,7 +91,12 @@ function saveOrderToSheet(order) {
   let sheet = ss.getSheetByName(ORDER_SHEET);
   if (!sheet) sheet = ss.insertSheet(ORDER_SHEET);
 
-  sheet.clearContents();
+  // Limpa apenas a coluna A, preservando outras colunas (G, H, I)
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 0) {
+    sheet.getRange(1, 1, lastRow, 1).clearContent();
+  }
+
   if (order.length === 0) return;
 
   const values = order.map((name) => [name]);
