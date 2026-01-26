@@ -2015,13 +2015,13 @@ ${body}`.trim();
     };
     const handleCardClick = async (player) => {
       if (!player || !player.id) {
-        console.warn("handleCardClick chamado com player inv�lido");
-        return;
-      if (!isController && !isEditMode && !isAllocationMode) {
-        setWarningMsg("Outra pessoa está controlando o draft!");
-        playSound("alert");
+        console.warn("handleCardClick chamado com player inválido");
         return;
       }
+      if (!isController && !isEditMode && !isAllocationMode) {
+        setShowPasswordModal(true);
+        playSound("alert");
+        return;
       }
       if (isEditMode) {
         setEditingPlayer(player);
@@ -2173,6 +2173,11 @@ ${body}`.trim();
       setIsPlaying(false);
     };
     const handleShuffleTeams = () => {
+      if (!isController) {
+        setShowPasswordModal(true);
+        playSound("alert");
+        return;
+      }
       if (currentPickIndex > 0 && !isDraftComplete) {
         if (!confirm("O Draft j\xE1 come\xE7ou! Mudar a ordem agora pode afetar a sequ\xEAncia atual. Deseja continuar?"))
           return;
@@ -2230,6 +2235,11 @@ ${body}`.trim();
       });
     };
     const togglePlayPause = () => {
+      if (!isController) {
+        setShowPasswordModal(true);
+        playSound("alert");
+        return;
+      }
       if (isDraftComplete) return;
       setIsPlaying(!isPlaying);
     };
@@ -2831,8 +2841,8 @@ ${body}`.trim();
     ), /* @__PURE__ */ import_react3.default.createElement(Trophy, { size: 28, className: "text-white hidden" })), /* @__PURE__ */ import_react3.default.createElement("div", { className: "hidden lg:block" }, /* @__PURE__ */ import_react3.default.createElement("h1", { className: "font-black text-xl leading-none text-white tracking-wide" }, "LIGA1", /* @__PURE__ */ import_react3.default.createElement("span", { className: "text-orange-500" }, "DRAFT")))), /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex-1 flex justify-center items-center h-full max-w-5xl" }, !isDraftComplete && !isEditMode && !isAllocationMode ? /* @__PURE__ */ import_react3.default.createElement("div", { className: "flex items-center gap-6 w-full justify-center" }, /* @__PURE__ */ import_react3.default.createElement(
       "button",
       {
-        onClick: togglePlayPause, disabled: !isController,
-        className: `p-4 rounded-full ${!isController ? "opacity-50 cursor-not-allowed" : ""} transition-all hover:scale-105 active:scale-95 shadow-lg border-2
+        onClick: togglePlayPause,
+        className: `p-4 rounded-full ${!isController ? "opacity-50 cursor-pointer" : ""} transition-all hover:scale-105 active:scale-95 shadow-lg border-2
                         ${isPlaying ? "bg-yellow-500/10 border-yellow-500 text-yellow-500" : "bg-green-500/10 border-green-500 text-green-500 animate-pulse"}
                     `
       },
@@ -2984,6 +2994,11 @@ ${body}`.trim();
       "button",
       {
         onClick: () => {
+          if (!isController) {
+            setShowPasswordModal(true);
+            playSound("alert");
+            return;
+          }
           setIsAllocationMode(!isAllocationMode);
           setIsEditMode(false);
         },
@@ -2997,6 +3012,11 @@ ${body}`.trim();
       "button",
       {
         onClick: () => {
+          if (!isController) {
+            setShowPasswordModal(true);
+            playSound("alert");
+            return;
+          }
           const newState = !isEditMode;
           setIsEditMode(newState);
           setIsAllocationMode(false);
