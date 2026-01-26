@@ -2329,11 +2329,24 @@ ${body}`.trim();
       setPlayers(players.map((p) => p.id === updatedPlayer.id ? updatedPlayer : p));
       setEditingPlayer(null);
     };
+    const resetSheet2 = async () => {
+      if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
+        return;
+      try {
+        await fetch(SHEET_WRITE_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "reset_sheet2" })
+        });
+      } catch (e) {
+        console.warn("Erro ao resetar Sheet2:", e);
+      }
+    };
     const resetDatabase = () => {
         const handleSoftReset = async () => {
           await clearRegularAssignments();
-          await unlockDraftSession();
-          localStorage.removeItem("liga1_draft_session_token");
+          await resetSheet2();
           const keptAssignments = {};
           players.forEach((p) => {
             if ((p.type === "CAPTAIN" || p.type === "WILDCARD") && assignments[p.id]) {
@@ -2347,12 +2360,11 @@ ${body}`.trim();
           setHasStarted(false);
           setIsAllocationMode(false);
           setConfirmModal(null);
-          setSuccessMsg("Reset suave conclu\xEDdo!");
+          setSuccessMsg("Reset suave concluído!");
         };
         const handleHardReset = async () => {
           await clearSheetAssignments();
-          await unlockDraftSession();
-          localStorage.removeItem("liga1_draft_session_token");
+          await resetSheet2();
           setPlayers(DEFAULT_PLAYERS);
           setTeams(INITIAL_TEAMS);
           setAssignments({});

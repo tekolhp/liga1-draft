@@ -40,6 +40,11 @@ function doPost(e) {
       return json({ ok: true, action: "set_controller", controllerId });
     }
 
+    if (action === "reset_sheet2") {
+      resetSheet2();
+      return json({ ok: true, action: "reset_sheet2" });
+    }
+
     const name = (body.name || "").toString().trim();
     const team = (body.team || "").toString().trim();
 
@@ -131,6 +136,20 @@ function getActiveController() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ORDER_SHEET);
   if (!sheet) return "";
   return (sheet.getRange(ACTIVE_CONTROLLER_CELL).getValue() || "").toString();
+}
+
+function resetSheet2() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(ORDER_SHEET);
+  if (!sheet) return;
+
+  // Limpa coluna A (ordem do shuffle)
+  sheet.clearContents();
+
+  // Reseta células de estado
+  sheet.getRange(STATE_PICK_CELL).setValue(0);
+  sheet.getRange(STATE_QUEUE_CELL).setValue("[]");
+  sheet.getRange(ACTIVE_CONTROLLER_CELL).setValue("");
 }
 
 function upsertTeamByName(playerName, teamName) {
