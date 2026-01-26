@@ -2785,8 +2785,19 @@ ${body}`.trim();
       const inEditMode = isDraft ? isEditMode : false;
       const inAllocationMode = isDraft ? isAllocationMode : false;
       const isCardPlayable = isDraft ? isPlaying : true;
-      const isGoleiroRestricted = isDraft && !isTaken && !inEditMode && !inAllocationMode && player.position === "GOL" && currentTeamHasGoalie;
-      const isNonGoalieRestricted = isDraft && !isTaken && !inEditMode && !inAllocationMode && forceGoaliePick && player.position !== "GOL";
+
+      // Define qual time usar para validações (draft usa currentTeam, roster usa teamInfo da URL)
+      const effectiveTeam = isDraft ? currentTeam : teamInfo;
+
+      // Calcula se o time efetivo tem goleiro
+      const effectiveTeamHasGoalie = isDraft ? currentTeamHasGoalie : teamHasGoalie;
+
+      // Calcula se deve forçar escolha de goleiro
+      const effectiveForceGoalie = isDraft ? forceGoaliePick : forceGoaliePickForTeam;
+
+      // Aplica as mesmas restrições para draft e roster
+      const isGoleiroRestricted = !isTaken && !inEditMode && !inAllocationMode && player.position === "GOL" && effectiveTeamHasGoalie;
+      const isNonGoalieRestricted = !isTaken && !inEditMode && !inAllocationMode && effectiveForceGoalie && player.position !== "GOL";
       const isRegularInAllocation = isDraft && inAllocationMode && player.type === "REGULAR" && !isTaken && !isDraftComplete;
       return /* @__PURE__ */ import_react3.default.createElement(
         "div",
