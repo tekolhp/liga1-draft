@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git checkout:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(start index.html)",
+      "Bash(git push:*)",
+      "Bash(powershell -Command \"\\(Get-Content index.html -Raw\\) -replace ''draftPassword \\\\? \"\"Senha Necess\\\\xE1ria\"\" : \"\"Definir Senha\"\"'', ''\"\"Acesso ao Draft\"\"'' | Set-Content index.html\")",
+      "Bash(powershell -Command \"\\(Get-Content index.html -Raw\\) -replace ''draftPassword \\\\? \"\"Digite a senha\"\" : \"\"M\\\\xEDnimo 3 caracteres\"\"'', ''\"\"Digite a senha\"\"'' | Set-Content index.html\")",
+      "Bash(awk:*)"
+    ]
+  }
+}
