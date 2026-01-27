@@ -1330,9 +1330,9 @@
         fileId = match2[1];
       }
 
-      // Se encontrou o ID, converte para formato de thumbnail (melhor performance)
+      // Se encontrou o ID, converte para formato de download direto (imagem crua)
       if (fileId) {
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w500`;
+        return `https://drive.google.com/uc?export=view&id=${fileId}`;
       }
 
       // Se não for Google Drive, retorna a URL original
@@ -2410,10 +2410,24 @@ ${body}`.trim();
         console.warn("Erro ao resetar Sheet2:", e);
       }
     };
+    const resetSheet2KeepController = async () => {
+      if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
+        return;
+      try {
+        await fetch(SHEET_WRITE_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "reset_sheet2_keep_controller" })
+        });
+      } catch (e) {
+        console.warn("Erro ao resetar Sheet2:", e);
+      }
+    };
     const resetDatabase = () => {
         const handleSoftReset = async () => {
           await clearRegularAssignments();
-          await resetSheet2();
+          await resetSheet2KeepController();
           const keptAssignments = {};
           players.forEach((p) => {
             if ((p.type === "CAPTAIN" || p.type === "WILDCARD") && assignments[p.id]) {

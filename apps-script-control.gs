@@ -45,6 +45,11 @@ function doPost(e) {
       return json({ ok: true, action: "reset_sheet2" });
     }
 
+    if (action === "reset_sheet2_keep_controller") {
+      resetSheet2KeepController();
+      return json({ ok: true, action: "reset_sheet2_keep_controller" });
+    }
+
     const name = (body.name || "").toString().trim();
     const team = (body.team || "").toString().trim();
 
@@ -155,6 +160,26 @@ function resetSheet2() {
   sheet.getRange(STATE_PICK_CELL).setValue(0);
   sheet.getRange(STATE_QUEUE_CELL).setValue("[]");
   sheet.getRange(ACTIVE_CONTROLLER_CELL).setValue("");
+}
+
+function resetSheet2KeepController() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = ss.getSheetByName(ORDER_SHEET);
+  if (!sheet) return;
+
+  // Salva o controlador atual
+  const currentController = sheet.getRange(ACTIVE_CONTROLLER_CELL).getValue();
+
+  // Limpa coluna A (ordem do shuffle)
+  const lastRow = sheet.getLastRow();
+  if (lastRow > 0) {
+    sheet.getRange(1, 1, lastRow, 1).clearContent();
+  }
+
+  // Reseta células de estado MAS preserva o controlador
+  sheet.getRange(STATE_PICK_CELL).setValue(0);
+  sheet.getRange(STATE_QUEUE_CELL).setValue("[]");
+  sheet.getRange(ACTIVE_CONTROLLER_CELL).setValue(currentController);
 }
 
 function upsertTeamByName(playerName, teamName) {
