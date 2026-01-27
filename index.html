@@ -1514,7 +1514,7 @@
         setSocialLogoBlurred("");
         return;
       }
-      createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 100 }).then((dataUrl) => {
+      createOutlinedPng(socialTeam.logo, { color: "#ffffff", thickness: 50 }).then((dataUrl) => {
         if (isActive)
           setSocialLogoOutlined(dataUrl);
       }).catch((err) => {
