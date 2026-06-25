@@ -910,6 +910,17 @@
     SHEET_WRITE_URL: "https://script.google.com/macros/s/AKfycbz3A_EDOAfTfKINFvcY39pO5xOY1eU_9NpncWpDbYia2gR_rOOCwUDEZZCRhsnBhelp/exec",
     SHEET_GVIZ_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSGO-Bi198_bYNK62KxPXm595Vo8D3s7dF5JF4Q6UvlFs1nIpmndY45P7LEQKwFazofU1UucWJE1G6v/gviz/tq?tqx=out:json",
 
+    // ===== Supabase (fonte de dados — substitui Google Sheets/Drive) =====
+    // Roster/times/fotos vêm do nosso banco (RLS public_read, leitura anônima).
+    SUPABASE_URL: "https://medcoduzluvualafeqfl.supabase.co",
+    SUPABASE_ANON_KEY: "sb_publishable_BLXQX5l7wU9gLr2V-4p3yg_s462dS0v",
+    // Edição vigente do draft (parametrizável; ano que vem é só trocar).
+    CHAMPIONSHIP_ID: 10,
+    // Escrita das escolhas: rota do dashboard (Next) protegida por login admin.
+    // CONFIRMAR o domínio do dashboard antes de publicar.
+    WRITE_API_URL: "https://liga-1.vercel.app/api/draft",
+    ADMIN_USER: "admin",
+
     // Security
     DRAFT_PASSWORD: "LIGA1DRAFT2026",
 
@@ -942,6 +953,121 @@
   var SHEET_CSV_URL = CONFIG.SHEET_CSV_URL;
   var SHEET_WRITE_URL = CONFIG.SHEET_WRITE_URL;
   var SHEET_GVIZ_URL = CONFIG.SHEET_GVIZ_URL;
+
+  // ===== Supabase como fonte (substitui Google Sheets/Drive) =====
+  // SB guarda o token de admin (login) e mapas nome->draftId / time->teamId,
+  // pra traduzir as escolhas (feitas por nome) em UPDATEs no nosso banco.
+  var SB = { byName: {}, teamIdByName: {}, token: null };
+  try { SB.token = localStorage.getItem("liga1_draft_token") || null; } catch (e) {}
+  var sbHexToRgba = (hex, a) => {
+    const h = (hex || "").replace("#", "");
+    if (h.length < 6) return `rgba(30,41,59,${a})`;
+    const n = parseInt(h.slice(0, 6), 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  };
+  var sbIsLight = (hex) => {
+    const h = (hex || "").replace("#", "");
+    if (h.length < 6) return false;
+    const n = parseInt(h.slice(0, 6), 16);
+    return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) > 160;
+  };
+  // Monta o objeto de time no shape que o app consome, derivando o visual do hex.
+  var sbMakeTeam = (t) => ({
+    id: t.id,
+    name: t.name,
+    logo: t.logo_url || "",
+    primary: t.primary_color || "#1f2937",
+    secondary: t.secondary_color || "#0f172a",
+    grid: sbHexToRgba(t.primary_color || "#1f2937", 0.9),
+    color: "from-slate-700 to-slate-900",
+    text: sbIsLight(t.primary_color) ? "text-black" : "text-white",
+    bg: "bg-slate-800",
+    isLight: sbIsLight(t.primary_color),
+    badge: ""
+  });
+  // Posições do banco (futsal) -> vocabulário do sorteio.
+  var SB_POS_MAP = {
+    "GOLEIRO": "GOL", "FIXO": "FIXO",
+    "MEIA DEFENSIVO": "MEI DEF", "MEIA ARMADOR": "MEI ARM",
+    "ALA DIREITA": "ALA DIR", "ALA ESQUERDA": "ALA ESQ",
+    "PIVÔ": "PIVÔ", "PIVO": "PIVÔ"
+  };
+  var sbCsvCell = (v) => String(v == null ? "" : v).replace(/[",;\t\r\n]/g, " ").trim();
+  var sbRpc = async (fn) => {
+    const r = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+      method: "POST",
+      headers: {
+        apikey: CONFIG.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ p_championship_id: CONFIG.CHAMPIONSHIP_ID })
+    });
+    if (!r.ok) throw new Error(`Supabase ${fn} ${r.status}`);
+    return r.json();
+  };
+  // Gera o MESMO CSV que o app já sabe parsear (mantém todo o downstream intacto).
+  var sbFetchRosterCsv = async () => {
+    const rows = await sbRpc("draft_roster");
+    SB.byName = {};
+    const out = ["nome,apelido,posicao,categoria,fotourl,time"];
+    rows.forEach((r) => {
+      SB.byName[normalizePlayerKey(r.name)] = { draftId: r.id };
+      const pos = SB_POS_MAP[(r.position || "").toUpperCase()] || r.position || "";
+      const foto = r.photos && r.photos.length ? r.photos[0] : "";
+      out.push([
+        sbCsvCell(r.name),
+        sbCsvCell(r.player_nickname || r.shirt_name),
+        sbCsvCell(pos),
+        sbCsvCell(r.category),
+        sbCsvCell(foto),
+        sbCsvCell(r.team_name)
+      ].join(","));
+    });
+    return out.join("\n");
+  };
+  var sbFetchTeams = async () => {
+    const rows = await sbRpc("draft_teams");
+    SB.teamIdByName = {};
+    return rows.map((t) => {
+      SB.teamIdByName[normalizePlayerKey(t.name)] = t.id;
+      return sbMakeTeam(t);
+    });
+  };
+  // Escrita (pick/undo/reset) via rota do dashboard, autenticada por Bearer.
+  var sbWrite = async (body) => {
+    if (!SB.token) return { error: "sem login" };
+    try {
+      const r = await fetch(CONFIG.WRITE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${SB.token}` },
+        body: JSON.stringify(body)
+      });
+      return await r.json().catch(() => ({}));
+    } catch (e) {
+      console.warn("Erro de escrita Supabase:", e);
+      return { error: String(e) };
+    }
+  };
+  var sbLogin = async (username, password) => {
+    try {
+      const r = await fetch(CONFIG.WRITE_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "login", username, password })
+      });
+      const data = await r.json().catch(() => ({}));
+      if (r.ok && data.token) {
+        SB.token = data.token;
+        try { localStorage.setItem("liga1_draft_token", data.token); } catch (e) {}
+        return true;
+      }
+    } catch (e) {
+      console.warn("Erro de login:", e);
+    }
+    return false;
+  };
+
   var GAME_POSITIONS = ["PIV\xD4", "ALA DIR", "ALA ESQ", "MEI ARM", "MEI DEF", "FIXO", "GOL"];
   var FILTER_POSITIONS = ["TODOS", "DISPON\xCDVEIS", "CAPS", "WC", ...GAME_POSITIONS];
   var TURN_DURATION = CONFIG.TURN_DURATION;
@@ -1010,15 +1136,9 @@
       return false;
     return a === b || a.includes(b) || b.includes(a);
   };
-  var readTeamOrderFromSheet = async () => {
-    try {
-      const response = await fetch(`${SHEET_WRITE_URL}?action=read_order&sheet=Sheet2`, { cache: "no-store" });
-      const data = await response.json();
-      return Array.isArray(data?.order) ? data.order : [];
-    } catch (err) {
-      return [];
-    }
-  };
+  // Estado/ordem/controller agora são LOCAIS (sem Google Sheets). Ordem dos times
+  // é sorteada no próprio app; nada a ler de fora.
+  var readTeamOrderFromSheet = async () => [];
   var SHEET_GVIZ_SESSION_URL = `${SHEET_GVIZ_URL}&sheet=Sheet2`;
   var loadGvizTable = (url) => new Promise((resolve, reject) => {
     const callbackId = `gviz_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -1052,62 +1172,14 @@
     };
     document.body.appendChild(script);
   });
-  var readDraftStateFromSheet = async () => {
-    try {
-      const response = await fetch(`${SHEET_WRITE_URL}?action=read_state&cb=${Date.now()}`, { cache: "no-store" });
-      const data = await response.json();
-      return data?.state || {};
-    } catch (err) {
-      return {};
-    }
-  };
-  var saveDraftStateToSheet = async (pickIndex, queueIds) => {
-    if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
-      return;
-    try {
-      await fetch(SHEET_WRITE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "save_state", pickIndex, queue: queueIds })
-      });
-    } catch (err) {
-      console.warn("Erro ao salvar estado do draft:", err);
-    }
-  };
-  var setActiveController = async (controllerId) => {
-    try {
-      await fetch(SHEET_WRITE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "set_controller", controllerId })
-      });
-    } catch (err) {
-      console.warn("Erro ao definir controlador:", err);
-    }
-  };
+  var readDraftStateFromSheet = async () => ({});
+  var saveDraftStateToSheet = async () => {};
+  var setActiveController = async () => {};
+  // Single-machine: o controlador é sempre a própria sessão local.
   var getActiveController = async () => {
-    try {
-      const response = await fetch(`${SHEET_WRITE_URL}?action=read_controller&cb=${Date.now()}`, { cache: "no-store" });
-      const data = await response.json();
-      return data?.controllerId || "";
-    } catch (err) {
-      return "";
-    }
+    try { return localStorage.getItem("liga1_session_id") || ""; } catch (err) { return ""; }
   };
-  var saveTeamOrderToSheet = async (orderNames) => {
-    try {
-      await fetch(SHEET_WRITE_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "save_order", sheet: "Sheet2", order: orderNames })
-      });
-    } catch (err) {
-      console.warn("Erro ao salvar ordem dos times:", err);
-    }
-  };
+  var saveTeamOrderToSheet = async () => {};
   var normalizePlayerKey = (value) => value.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   var parseSheetCsv = (rawData) => {
     if (!rawData)
@@ -1595,25 +1667,21 @@ ${body}`.trim();
       });
       const loadSheet = async () => {
         try {
-          const table = await loadSheetViaGviz();
-          const csv = tableToCsv(table);
+          const csv = await sbFetchRosterCsv();
           if (csv)
             handleSimpleImport(csv, true);
-        } catch (e) {
-          try {
-            if (window.location.protocol === "file:") {
-              throw new Error("Skip CSV fetch on file protocol");
-            }
-            const response = await fetch(SHEET_CSV_URL, { signal: controller.signal, cache: "no-store" });
-            const text = await response.text();
-            if (text)
-              handleSimpleImport(text, true);
-          } catch (err) {
-            if (err?.name !== "AbortError") {
-              console.warn("Erro ao carregar planilha via CSV:", err);
-              setWarningMsg("Falha ao carregar a planilha do Google.");
-            }
-          }
+        } catch (err) {
+          console.warn("Erro ao carregar roster do Supabase:", err);
+          setWarningMsg("Falha ao carregar jogadores do Supabase.");
+        }
+      };
+      const loadTeams = async () => {
+        try {
+          const t = await sbFetchTeams();
+          if (t.length)
+            setTeams(t);
+        } catch (err) {
+          console.warn("Erro ao carregar times do Supabase:", err);
         }
       };
       const loadOrder = async () => {
@@ -1651,7 +1719,7 @@ ${body}`.trim();
           if (showPasswordModal) {
             return;
           }
-          await Promise.all([loadSheet(), loadOrder(), loadDraftState()]);
+          await Promise.all([loadSheet(), loadTeams(), loadOrder(), loadDraftState()]);
         } finally {
           if (!showPasswordModal) {
             setIsBootstrapped(true);
@@ -1680,8 +1748,7 @@ ${body}`.trim();
       const fetchRoster = async () => {
         setPublicLoading(true);
         try {
-          const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
-          const text = await response.text();
+          const text = await sbFetchRosterCsv();
             const entries = parseSheetCsv(text);
             const typeOrder = { CAPTAIN: 0, WILDCARD: 1, REGULAR: 2 };
             const chosen = entries.filter((entry) => entry.team && isTeamSlugMatch(entry.team, teamRoute));
@@ -1701,7 +1768,7 @@ ${body}`.trim();
             }
           } catch (err) {
             if (isActive)
-              setPublicError("Falha ao carregar a planilha do Google.");
+              setPublicError("Falha ao carregar jogadores do Supabase.");
           } finally {
             if (isActive)
               setPublicLoading(false);
@@ -1802,47 +1869,27 @@ ${body}`.trim();
         console.warn("Erro ao criar �udio:", e);
       }
     };
+      // Escolha do draft → UPDATE draft.team_id/status no nosso banco (via rota admin).
       const sendAssignmentToSheet = async (playerName, teamName) => {
-        if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
+        const entry = SB.byName[normalizePlayerKey(playerName || "")];
+        const teamId = SB.teamIdByName[normalizePlayerKey(teamName || "")];
+        if (!entry || teamId == null) {
+          console.warn("Pick sem mapeamento (nome/time):", playerName, teamName);
           return;
-        try {
-          await fetch(SHEET_WRITE_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: playerName, team: teamName })
-          });
-        } catch (e) {
-          console.warn("Erro ao enviar assignment para planilha:", e);
         }
+        const res = await sbWrite({
+          action: "pick",
+          draft_id: entry.draftId,
+          team_id: teamId,
+          championship_id: CONFIG.CHAMPIONSHIP_ID
+        });
+        if (res?.error) console.warn("Falha ao gravar pick:", res.error);
       };
       const clearSheetAssignments = async () => {
-        if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
-          return;
-        try {
-          await fetch(SHEET_WRITE_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "clear_assignments", sheet: "Sheet1", column: "F" })
-          });
-        } catch (e) {
-          console.warn("Erro ao limpar assignments da planilha:", e);
-        }
+        await sbWrite({ action: "reset", championship_id: CONFIG.CHAMPIONSHIP_ID, soft: false });
       };
     const clearRegularAssignments = async () => {
-        if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
-          return;
-        try {
-          await fetch(SHEET_WRITE_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "clear_assignments_soft", sheet: "Sheet1", column: "F" })
-          });
-        } catch (e) {
-          console.warn("Erro ao limpar assignments soft da planilha:", e);
-        }
+        await sbWrite({ action: "reset", championship_id: CONFIG.CHAMPIONSHIP_ID, soft: true });
       };
     const handleExportSocial = (team) => {
       setSocialTeam(team);
@@ -2210,6 +2257,9 @@ ${body}`.trim();
       if (currentPickIndex === 0 || pickHistory.length === 0)
         return;
       const lastPlayerId = pickHistory[pickHistory.length - 1];
+      const undoneEntry = SB.byName[normalizePlayerKey((players.find((p) => p.id === lastPlayerId) || {}).name || "")];
+      if (undoneEntry)
+        sbWrite({ action: "undo", draft_id: undoneEntry.draftId, championship_id: CONFIG.CHAMPIONSHIP_ID });
       setAssignments((prev) => {
         const newAssignments = __spreadValues({}, prev);
         delete newAssignments[lastPlayerId];
@@ -2305,7 +2355,8 @@ ${body}`.trim();
         return;
       }
 
-      if (passwordInput.trim() !== CONFIG.DRAFT_PASSWORD) {
+      const okLogin = await sbLogin(CONFIG.ADMIN_USER, passwordInput.trim());
+      if (!okLogin) {
         setWarningMsg("Senha incorreta!");
         setPasswordInput("");
         return;
@@ -2398,34 +2449,8 @@ ${body}`.trim();
       setPlayers(players.map((p) => p.id === updatedPlayer.id ? updatedPlayer : p));
       setEditingPlayer(null);
     };
-    const resetSheet2 = async () => {
-      if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
-        return;
-      try {
-        await fetch(SHEET_WRITE_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "reset_sheet2" })
-        });
-      } catch (e) {
-        console.warn("Erro ao resetar Sheet2:", e);
-      }
-    };
-    const resetSheet2KeepController = async () => {
-      if (!SHEET_WRITE_URL || SHEET_WRITE_URL.includes("PASTE_"))
-        return;
-      try {
-        await fetch(SHEET_WRITE_URL, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "reset_sheet2_keep_controller" })
-        });
-      } catch (e) {
-        console.warn("Erro ao resetar Sheet2:", e);
-      }
-    };
+    const resetSheet2 = async () => {};
+    const resetSheet2KeepController = async () => {};
     const resetDatabase = () => {
         const handleSoftReset = async () => {
           await clearRegularAssignments();
